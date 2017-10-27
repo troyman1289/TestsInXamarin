@@ -10,14 +10,14 @@ namespace Backend.RestService
 {
     public class RestService : IRestService
     {
-        public IList<GlobalCalculation> FetchGlobalCalculations()
+        public Task<IList<GlobalCalculation>> FetchGlobalCalculations()
         {
             throw new NotImplementedException();
         }
 
-        public void SaveGlobalCalculations(IList<GlobalCalculation> globalCalculations)
+        public Task SaveGlobalCalculations(IList<GlobalCalculation> globalCalculations)
         {
-            
+            throw new NotImplementedException();
         }
     }
 }

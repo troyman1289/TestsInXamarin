@@ -12,10 +12,15 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Editor
-            Grid.Row="0"
-            IsEnabled="False"
-            Text="{Binding OperationString}" />
+        <ListView Grid.Row="0" ItemsSource="{Binding OperationString}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid />
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -49,7 +54,6 @@
         <Button
             Grid.Row="2"
             Margin="0,20,0,0"
-            Command="{Binding RemoveLastOperationCommand}"
-            Text="Remove Last Operation" />
+            BackgroundColor="GreenYellow" />
     </Grid>
 </ContentPage>

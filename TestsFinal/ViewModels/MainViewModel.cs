@@ -15,16 +15,20 @@ namespace ViewModels
     public class MainViewModel : NotifyingObject
     {
         private readonly ICalculationManager _calculationManager;
+        private readonly INavigationService _navigationService;
 
-        public MainViewModel(ICalculationManager calculationManager)
+        public MainViewModel(
+            ICalculationManager calculationManager,
+            INavigationService navigationService)
         {
             _calculationManager = calculationManager;
+            _navigationService = navigationService;
             SetGlobalCalculations();
         }
 
         #region IsBusy
 
-        private bool _isBusy;
+        private bool _isBusy = false;
 
         public bool IsBusy
         {
@@ -54,25 +58,6 @@ namespace ViewModels
 
         #endregion
 
-
-        #region SelectedGlobalCalculation
-
-        private GlobalCalculation _selectedGlobalCalculation;
-
-        public GlobalCalculation SelectedGlobalCalculation
-        {
-            get { return _selectedGlobalCalculation; }
-            set
-            {
-                if (_selectedGlobalCalculation != value) {
-                    _selectedGlobalCalculation = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        #endregion
-
         #region GlobalResult
 
         private string _globalResult;
@@ -98,39 +83,42 @@ namespace ViewModels
             foreach (var globalCalculation in calculations) {
                 GlobalCalculations.Add(globalCalculation);
             }
+
+            //add placeholder for new global calculations
+            var palceHolder = new GlobalCalculation {Order = int.MaxValue, Label = "New..."};
+            GlobalCalculations.Add(palceHolder);
+
             SetGlobalResult();
         }
 
         private void SetGlobalResult()
         {
-            
+    
         }
 
-        public void RefreshCalculation()
+        public void RefreshCalculations()
         {
-            
+            SetGlobalCalculations();
         }
 
+        #region OpenCalculationCommand
 
+        private ICommand _openCalculationCommand;
 
-        #region RemoveLocalCalculationCommand
-
-        private ICommand _removeLocalCalculationCommand;
-
-        public ICommand RemoveLocalCalculationCommand
+        public ICommand OpenCalculationCommand
         {
             get
             {
-                if (_removeLocalCalculationCommand == null) {
-                    _removeLocalCalculationCommand = new RelayCommand<LocalCalculation>(HandleRemoveLocalCalculation);
+                if (_openCalculationCommand == null) {
+                    _openCalculationCommand = new RelayCommand<LocalCalculation>(HandleOpenLocalCalculation, (localCalculation) => !IsBusy);
                 }
-                return _removeLocalCalculationCommand;
+                return _openCalculationCommand;
             }
         }
 
-        private void HandleRemoveLocalCalculation(LocalCalculation localCalculation)
+        private void HandleOpenLocalCalculation(LocalCalculation localCalculation)
         {
-
+            _navigationService.PushView(typeof(GlobalCalculationViewModel).ToString());
         }
 
         #endregion
@@ -152,7 +140,73 @@ namespace ViewModels
 
         private void HandleAddNewCalculation()
         {
-            
+            _navigationService.PushView(typeof(GlobalCalculationViewModel).ToString());
+        }
+
+        #endregion
+
+        #region FetchCalculationsCommand
+
+        private ICommand _fetchCalculationsCommand;
+
+        public ICommand FetchCalculationsCommand
+        {
+            get
+            {
+                if (_fetchCalculationsCommand == null) {
+                    _fetchCalculationsCommand = new RelayCommand(HandleFetchCalculation, () => !IsBusy);
+                }
+                return _fetchCalculationsCommand;
+            }
+        }
+
+        private void HandleFetchCalculation()
+        {
+
+        }
+
+        #endregion
+
+        #region SaveCalculationsCommand
+
+        private ICommand _saveCalculationsCommand;
+
+        public ICommand SaveCalculationsCommand
+        {
+            get
+            {
+                if (_saveCalculationsCommand == null) {
+                    _saveCalculationsCommand = new RelayCommand(HandleSaveCalculation, () => !IsBusy);
+                }
+                return _saveCalculationsCommand;
+            }
+        }
+
+        private void HandleSaveCalculation()
+        {
+
+        }
+
+        #endregion
+
+        #region RemoveGlobalCalculationCommand
+
+        private ICommand _removeGlobalCalculationCommand;
+
+        public ICommand RemoveGlobalCalculationCommand
+        {
+            get
+            {
+                if (_removeGlobalCalculationCommand == null) {
+                    _removeGlobalCalculationCommand = new RelayCommand<GlobalCalculation>(HandleRemoveGlobalCalculation);
+                }
+                return _removeGlobalCalculationCommand;
+            }
+        }
+
+        private void HandleRemoveGlobalCalculation(GlobalCalculation globalCalculation)
+        {
+
         }
 
         #endregion

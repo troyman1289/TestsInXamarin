@@ -14,15 +14,22 @@ namespace ViewModels
     public class GlobalCalculationViewModel : NotifyingObject
     {
         private readonly ICalculationManager _calculationManager;
+        private readonly INavigationService _navigationService;
+        private readonly MainViewModel _mainViewModel;
 
-        public GlobalCalculationViewModel(ICalculationManager calculationManager)
+        public GlobalCalculationViewModel(
+            ICalculationManager calculationManager,
+            INavigationService navigationService,
+            MainViewModel mainViewModel)
         {
             _calculationManager = calculationManager;
+            _navigationService = navigationService;
+            _mainViewModel = mainViewModel;
         }       
         
         #region GlobalCalculation
 
-        private GlobalCalculation _globalCalculation;
+        private GlobalCalculation _globalCalculation = new GlobalCalculation();
 
         public GlobalCalculation GlobalCalculation
         {
@@ -55,7 +62,10 @@ namespace ViewModels
 
         private void HandleSaveCalculation()
         {
-
+            _calculationManager.AddNewGlobalCalculation(GlobalCalculation);
+             GlobalCalculation = new GlobalCalculation();
+            _mainViewModel.RefreshCalculations();
+            _navigationService.GoBack();
         }
 
         #endregion

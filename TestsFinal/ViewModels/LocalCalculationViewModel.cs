@@ -15,6 +15,7 @@ namespace ViewModels
     public class LocalCalculationViewModel : NotifyingObject
     {
         private readonly ICalculationManager _calculationManager;
+        private LocalCalculation _currentLocalCalculation = new LocalCalculation();
 
         public LocalCalculationViewModel(ICalculationManager calculationManager)
         {
@@ -28,15 +29,15 @@ namespace ViewModels
 
         #region LocalCalculation
 
-        private LocalCalculation _localCalculation;
+        private GlobalCalculation _globalCalculation;
 
-        public LocalCalculation LocalCalculation
+        public GlobalCalculation GlobalCalculation
         {
-            get { return _localCalculation; }
+            get { return _globalCalculation; }
             set
             {
-                if (_localCalculation != value) {
-                    _localCalculation = value;
+                if (_globalCalculation != value) {
+                    _globalCalculation = value;
                     OnPropertyChanged();
                     Refresh();
                 }
@@ -153,7 +154,7 @@ namespace ViewModels
 
         #region NewOperand
 
-        private decimal _newOperand;
+        private decimal _newOperand = 0;
 
         public decimal NewOperand
         {
@@ -186,8 +187,8 @@ namespace ViewModels
 
         private void HandleAddOperation()
         {
-            int order = LocalCalculation.Operations.Any()
-                ? LocalCalculation.Operations.Max(o => o.Order)
+            int order = _currentLocalCalculation.Operations.Any()
+                ? _currentLocalCalculation.Operations.Max(o => o.Order)
                 : 1;
 
             var newOperation = new Operation
@@ -198,32 +199,52 @@ namespace ViewModels
                 Order = order
             };
 
-            LocalCalculation.Operations.Add(newOperation);
+            _currentLocalCalculation.Operations.Add(newOperation);
+            NewOperand = 0;
         }
 
         #endregion
 
-        #region RemoveLastOperationCommand
+        #region AddLocalCalculationCommand
 
-        private ICommand _removeLastOperationCommand;
+        private ICommand _addLocalCalculationCommand;
 
-        public ICommand RemoveLastOperationCommand
+        public ICommand AddLocalCalculationCommand
         {
             get
             {
-                if (_removeLastOperationCommand == null) {
-                    _removeLastOperationCommand = new RelayCommand(HandleRemoveLastOperation);
+                if (_addLocalCalculationCommand == null) {
+                    _addLocalCalculationCommand = new RelayCommand(HandleAddLocalCalculation);
                 }
-                return _removeLastOperationCommand;
+                return _addLocalCalculationCommand;
             }
         }
 
-        private void HandleRemoveLastOperation()
+        private void HandleAddLocalCalculation()
         {
-            var operation = LocalCalculation.Operations.OrderBy(o => o.Order).LastOrDefault();
-            if (operation != null) {
-                LocalCalculation.Operations.Remove(operation);
+            
+        }
+
+        #endregion
+
+        #region RemoveLocalCalculationCommand
+
+        private ICommand _removeLocalCalculationCommand;
+
+        public ICommand RemoveLocalCalculationCommand
+        {
+            get
+            {
+                if (_removeLocalCalculationCommand == null) {
+                    _removeLocalCalculationCommand = new RelayCommand<LocalCalculation>(HandleRemoveLocalCalculation);
+                }
+                return _removeLocalCalculationCommand;
             }
+        }
+
+        private void HandleRemoveLocalCalculation(LocalCalculation localCalculation)
+        {
+
         }
 
         #endregion
@@ -248,12 +269,12 @@ namespace ViewModels
 
         private void Refresh()
         {
-            if (LocalCalculation == null) {
+            if (_currentLocalCalculation == null) {
                 return;
             }
 
             var operationString = string.Empty;
-            foreach (var operation in LocalCalculation.Operations) {
+            foreach (var operation in _currentLocalCalculation.Operations) {
                 operationString += CreateOperationString(operation);
             }
 
@@ -276,10 +297,10 @@ namespace ViewModels
 
         private void RefreshCanAddBrackets()
         {
-            var lastOperationWithOpenBracket = LocalCalculation.Operations
+            var lastOperationWithOpenBracket = _currentLocalCalculation.Operations
                 .OrderBy(o => o.Order)
                 .LastOrDefault(o => o.BracketType == BracketType.Open);
-            var lastOperationWithCloseBracket = LocalCalculation.Operations
+            var lastOperationWithCloseBracket = _currentLocalCalculation.Operations
                 .OrderBy(o => o.Order)
                 .LastOrDefault(o => o.BracketType == BracketType.Close);
 

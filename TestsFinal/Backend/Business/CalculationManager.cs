@@ -28,5 +28,16 @@ namespace Backend.Business
             _dataAccess.Remove(localCalculation);
             globalCalculation.LocalCalculations.Remove(localCalculation);
         }
+
+        public void AddNewGlobalCalculation(GlobalCalculation globalCalculation)
+        {
+            var allGlobalCalculations = GetAllGlobalCalculations().ToList();
+            var newOrder = allGlobalCalculations.Any()
+                ? allGlobalCalculations.Max(g => g.Order) + 1
+                : 1;
+
+            globalCalculation.Order = newOrder;
+            _dataAccess.Insert(globalCalculation);
+        }
     }
 }

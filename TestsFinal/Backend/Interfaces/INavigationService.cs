@@ -8,5 +8,7 @@ namespace Backend.Interfaces
 {
     public interface INavigationService
     {
+        void PushView(string key);
+        void GoBack();
     }
 }

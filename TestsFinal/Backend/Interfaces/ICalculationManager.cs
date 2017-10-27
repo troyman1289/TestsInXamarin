@@ -11,5 +11,6 @@ namespace Backend.Interfaces
     {
         IList<GlobalCalculation> GetAllGlobalCalculations();
         void RemoveLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation);
+        void AddNewGlobalCalculation(GlobalCalculation globalCalculation);
     }
 }

@@ -5,19 +5,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:TestsFinal"
     BindingContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}">
-
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding AddNewCalculationCommand}" Text="Add" />
+        <ToolbarItem Command="{Binding FetchCalculationsCommand}" Text="Fetch" />
+        <ToolbarItem Command="{Binding SaveCalculationsCommand}" Text="Save" />
+    </ContentPage.ToolbarItems>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Picker
+        <local:SingleClickListView
             Grid.Row="0"
-            ItemsSource="{Binding GlobalCalculations}"
-            SelectedItem="{Binding SelectedGlobalCalculation}" />
-        <ListView
-            Grid.Row="1"
+            ItemClickCommand="{Binding OpenCalculationCommand}"
             ItemsSource="{Binding GlobalCalculations}"
             SeparatorVisibility="None">
             <ListView.ItemTemplate>
@@ -25,26 +26,24 @@
                     <ViewCell>
                         <ViewCell.ContextActions>
                             <MenuItem
-                                Command="{Binding Source={StaticResource Locator}, Path=MainViewModel.RemoveLocalCalculation}"
+                                Command="{Binding Source={StaticResource Locator}, Path=MainViewModel.RemoveGlobalCalculationCommand}"
                                 CommandParameter="{Binding}"
                                 IsDestructive="True"
                                 Text="Remove" />
                         </ViewCell.ContextActions>
                         <Grid BackgroundColor="DodgerBlue">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Text="cal" />
-                            <Label Grid.Column="1" Text="erg" />
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Text="{Binding Label}" />
+                            <Label Grid.Row="1" Text="erg" />
                         </Grid>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
-        </ListView>
-        <BoxView Grid.Row="2" BackgroundColor="GreenYellow">
-            <Label Text="erg" />
-        </BoxView>
+        </local:SingleClickListView>
+
     </Grid>
 
 </ContentPage>
