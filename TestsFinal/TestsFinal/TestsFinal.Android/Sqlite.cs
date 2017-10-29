@@ -22,7 +22,7 @@ namespace TestsFinal.Droid
     {
         public SQLiteConnection GetConnection()
         {
-            var sqliteFilename = "ShoppingList.db3";
+            var sqliteFilename = "Tests.db3";
             var folderPath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             var path = Path.Combine(folderPath, sqliteFilename);
             var platform = new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Backend.Interfaces;
 using Microsoft.Practices.ServiceLocation;
+using ViewModels;
 using Xamarin.Forms;
 
 namespace TestsFinal
@@ -17,6 +18,7 @@ namespace TestsFinal
             MainPage = new NavigationPage(new MainPage());
             var navigationService = (NavigationService)ServiceLocator.Current.GetInstance<INavigationService>();
             navigationService.Navigation = MainPage.Navigation;
+           // var g = ServiceLocator.Current.GetInstance<MainViewModel>();
         }
 
         protected override void OnStart()

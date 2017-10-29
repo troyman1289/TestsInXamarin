@@ -14,5 +14,8 @@ namespace Backend.Interfaces
         void Insert(Object obj);
         void Remove(IEnumerable<Object> objs);
         void Remove(Object obj);
+        IList<LocalCalculation> GetLocalCalculations(int parentGlobalCalculationId);
+        IList<Operation> GetOperations(int localCalculationParentId);
+        void Update(Object obj);
     }
 }

@@ -16,15 +16,20 @@ namespace ViewModels
     {
         private readonly ICalculationManager _calculationManager;
         private readonly INavigationService _navigationService;
+        private readonly LocalCalculationViewModel _calculationViewModel;
 
         public MainViewModel(
             ICalculationManager calculationManager,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            LocalCalculationViewModel calculationViewModel)
         {
             _calculationManager = calculationManager;
             _navigationService = navigationService;
+            _calculationViewModel = calculationViewModel;
             SetGlobalCalculations();
+
         }
+
 
         #region IsBusy
 
@@ -85,8 +90,6 @@ namespace ViewModels
             }
 
             //add placeholder for new global calculations
-            var palceHolder = new GlobalCalculation {Order = int.MaxValue, Label = "New..."};
-            GlobalCalculations.Add(palceHolder);
 
             SetGlobalResult();
         }
@@ -110,15 +113,17 @@ namespace ViewModels
             get
             {
                 if (_openCalculationCommand == null) {
-                    _openCalculationCommand = new RelayCommand<LocalCalculation>(HandleOpenLocalCalculation, (localCalculation) => !IsBusy);
+                    _openCalculationCommand = new RelayCommand<GlobalCalculation>(HandleOpenLocalCalculation, (globalCalculation) => !IsBusy);
                 }
                 return _openCalculationCommand;
             }
         }
 
-        private void HandleOpenLocalCalculation(LocalCalculation localCalculation)
+        private void HandleOpenLocalCalculation(GlobalCalculation globalCalculation)
         {
-            _navigationService.PushView(typeof(GlobalCalculationViewModel).ToString());
+            _calculationManager.LoadGlobalCalculation(globalCalculation);
+            _calculationViewModel.GlobalCalculation = globalCalculation;
+            _navigationService.PushView(typeof(LocalCalculationViewModel).ToString());
         }
 
         #endregion
@@ -206,7 +211,8 @@ namespace ViewModels
 
         private void HandleRemoveGlobalCalculation(GlobalCalculation globalCalculation)
         {
-
+            _calculationManager.RemoveGlobalCalculation(globalCalculation);
+            GlobalCalculations.Remove(globalCalculation);
         }
 
         #endregion

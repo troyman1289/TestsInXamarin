@@ -15,7 +15,6 @@ namespace ViewModels
     public class LocalCalculationViewModel : NotifyingObject
     {
         private readonly ICalculationManager _calculationManager;
-        private LocalCalculation _currentLocalCalculation = new LocalCalculation();
 
         public LocalCalculationViewModel(ICalculationManager calculationManager)
         {
@@ -27,7 +26,25 @@ namespace ViewModels
             get { return Backend.Model.Operator.Operators.GetAll(); }
         }
 
-        #region LocalCalculation
+        #region CurrentLocalCalculation
+
+        private LocalCalculation _currentLocalCalculation;
+
+        public LocalCalculation CurrentLocalCalculation
+        {
+            get { return _currentLocalCalculation; }
+            set
+            {
+                if (_currentLocalCalculation != value) {
+                    _currentLocalCalculation = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region GlobalCalculation
 
         private GlobalCalculation _globalCalculation;
 
@@ -39,7 +56,7 @@ namespace ViewModels
                 if (_globalCalculation != value) {
                     _globalCalculation = value;
                     OnPropertyChanged();
-                    Refresh();
+                    RefreshAll();
                 }
             }
         }
@@ -102,41 +119,59 @@ namespace ViewModels
         private void HandleAddBracket(BracketType bracketType)
         {
             if (bracketType == BracketType.Open) {
-                SelectedBracketType = SelectedBracketType == BracketType.Open
+                NewOperation.BracketType = NewOperation.BracketType == BracketType.Open
                     ? BracketType.None
                     : BracketType.Open;
             } else {
-                SelectedBracketType = SelectedBracketType == BracketType.Close
+                NewOperation.BracketType = NewOperation.BracketType == BracketType.Close
                     ? BracketType.None
                     : BracketType.Close;
             }
         }
- 
-        #endregion
 
         #endregion
 
-        #region SelectedBracketType
-
-        private BracketType _selectedBracketType;
-
-        public BracketType SelectedBracketType
-        {
-            get { return _selectedBracketType; }
-            set
-            {
-                if (_selectedBracketType != value) {
-                    _selectedBracketType = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         #endregion
+
+        //#region SelectedBracketType
+
+        //private BracketType _selectedBracketType;
+
+        //public BracketType SelectedBracketType
+        //{
+        //    get { return _selectedBracketType; }
+        //    set
+        //    {
+        //        if (_selectedBracketType != value) {
+        //            _selectedBracketType = value;
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
+
+        //#endregion
+
+        //#region SelectedOperator
+
+        //private Operator _selectedOperator;
+
+        //public Operator SelectedOperator
+        //{
+        //    get { return _selectedOperator; }
+        //    set
+        //    {
+        //        if (_selectedOperator != value) {
+        //            _selectedOperator = value;
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
+
+        //#endregion
 
         #region SelectedOperator
 
-        private Operator _selectedOperator;
+        private Operator _selectedOperator = Backend.Model.Operator.Operators.Addition;
 
         public Operator SelectedOperator
         {
@@ -152,17 +187,18 @@ namespace ViewModels
 
         #endregion
 
-        #region NewOperand
+        #region NewOperation
 
-        private decimal _newOperand = 0;
+        private Operation _newOperation = new Operation();
 
-        public decimal NewOperand
+        public Operation NewOperation
         {
-            get { return _newOperand; }
+            get { return _newOperation; }
             set
             {
-                if (_newOperand != value) {
-                    _newOperand = value;
+                if (_newOperation != value) {
+                    _newOperation = value;
+                    _newOperation.OperatorType = OperatorType.Addition;
                     OnPropertyChanged();
                 }
             }
@@ -187,20 +223,17 @@ namespace ViewModels
 
         private void HandleAddOperation()
         {
-            int order = _currentLocalCalculation.Operations.Any()
-                ? _currentLocalCalculation.Operations.Max(o => o.Order)
-                : 1;
+            //var newOperation = new Operation
+            //{
+            //    Operand = NewOperand,
+            //    OperatorType = SelectedOperator.OperatorType,
+            //    BracketType = SelectedBracketType
+            //};
+            NewOperation.OperatorType = SelectedOperator.OperatorType;
+            _calculationManager.AddOperation(CurrentLocalCalculation, NewOperation);
+            NewOperation = new Operation();
 
-            var newOperation = new Operation
-            {
-                Operand = NewOperand,
-                Operator = SelectedOperator,
-                BracketType = SelectedBracketType,
-                Order = order
-            };
-
-            _currentLocalCalculation.Operations.Add(newOperation);
-            NewOperand = 0;
+            RefreshLocalCalculation(CurrentLocalCalculation);     
         }
 
         #endregion
@@ -222,7 +255,9 @@ namespace ViewModels
 
         private void HandleAddLocalCalculation()
         {
-            
+            var newLocalCalculation = new LocalCalculation();
+            _calculationManager.AddLocalCalculation(GlobalCalculation, newLocalCalculation);
+            RefreshAll();
         }
 
         #endregion
@@ -236,7 +271,7 @@ namespace ViewModels
             get
             {
                 if (_removeLocalCalculationCommand == null) {
-                    _removeLocalCalculationCommand = new RelayCommand<LocalCalculation>(HandleRemoveLocalCalculation);
+                    _removeLocalCalculationCommand = new RelayCommand<LocalCalculation>(HandleRemoveLocalCalculation,lc => lc != null && lc.Order != 1);
                 }
                 return _removeLocalCalculationCommand;
             }
@@ -244,7 +279,7 @@ namespace ViewModels
 
         private void HandleRemoveLocalCalculation(LocalCalculation localCalculation)
         {
-
+            _calculationManager.RemoveLocalCalculation(GlobalCalculation,localCalculation, true);
         }
 
         #endregion
@@ -267,40 +302,39 @@ namespace ViewModels
 
         #endregion
 
-        private void Refresh()
+        private void RefreshAll()
         {
-            if (_currentLocalCalculation == null) {
-                return;
+            foreach (var localCalculation in GlobalCalculation.LocalCalculations)
+            {
+                _calculationManager.SetOperationString(localCalculation);
             }
 
-            var operationString = string.Empty;
-            foreach (var operation in _currentLocalCalculation.Operations) {
-                operationString += CreateOperationString(operation);
-            }
-
-            OperationString = operationString;
+            CurrentLocalCalculation = GlobalCalculation.LocalCalculations
+                .OrderBy(lc => lc.Order)
+                .LastOrDefault();
 
             RefreshCanAddBrackets();
         }
 
-        private string CreateOperationString(Operation operation)
+        private void RefreshLocalCalculation(LocalCalculation localCalculation)
         {
-            var operationString = operation.Operator.Label;
-            if (operation.BracketType == BracketType.Open) operationString += " (";
+            if (CurrentLocalCalculation == null) {
+                return;
+            }
+            
+            _calculationManager.SetResult(localCalculation);
+            _calculationManager.SetOperationString(localCalculation);
+            _calculationManager.RefreshGlobalResult(GlobalCalculation);
 
-            operationString += " " + operation.Operand.ToString("N2");
-
-            if (operation.BracketType == BracketType.Close) operationString += " )";
-
-            return operationString;
+            RefreshCanAddBrackets();
         }
 
         private void RefreshCanAddBrackets()
         {
-            var lastOperationWithOpenBracket = _currentLocalCalculation.Operations
+            var lastOperationWithOpenBracket = CurrentLocalCalculation.Operations
                 .OrderBy(o => o.Order)
                 .LastOrDefault(o => o.BracketType == BracketType.Open);
-            var lastOperationWithCloseBracket = _currentLocalCalculation.Operations
+            var lastOperationWithCloseBracket = CurrentLocalCalculation.Operations
                 .OrderBy(o => o.Order)
                 .LastOrDefault(o => o.BracketType == BracketType.Close);
 

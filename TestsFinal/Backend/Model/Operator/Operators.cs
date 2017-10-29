@@ -6,11 +6,15 @@ namespace Backend.Model.Operator
     {
         public static Operator Addition { get; }
         public static Operator Substraction { get; }
+        public static Operator Multiplication { get; }
+        public static Operator Division { get; }
 
         static Operators()
         {
             Addition = new Addition();
             Substraction = new Substraction();
+            Multiplication = new Multiplication();
+            Division = new Division();
         }
 
         public static List<Operator> GetAll()
@@ -18,7 +22,9 @@ namespace Backend.Model.Operator
             return new List<Operator>
             {
                 Addition,
-                Substraction
+                Substraction,
+                Multiplication,
+                Division
             };
         }
     }

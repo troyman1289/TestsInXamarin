@@ -16,14 +16,29 @@ namespace Backend.DataAccess
         public DataAccess(ISqliteConnectionService sqliteConnectionService)
         {
             _connection = sqliteConnectionService.GetConnection();
-            _connection.Table<Operation>();
-            _connection.Table<LocalCalculation>();
-            _connection.Table<GlobalCalculation>();
+
+            _connection.CreateTable<GlobalCalculation>();
+            _connection.CreateTable<LocalCalculation>();
+            _connection.CreateTable<Operation>();
         }
 
         public IList<GlobalCalculation> GetAllGlobalCalculations()
         {
             return _connection.Table<GlobalCalculation>().ToList();
+        }
+
+        public IList<LocalCalculation> GetLocalCalculations(int parentGlobalCalculationId)
+        {
+            return _connection.Table<LocalCalculation>()
+                .Where(lc => lc.ParentGlobalCalculationId == parentGlobalCalculationId)
+                .ToList();
+        }
+
+        public IList<Operation> GetOperations(int localCalculationParentId)
+        {
+            return _connection.Table<Operation>()
+                .Where(o => o.ParentLocalCalculationId == localCalculationParentId)
+                .ToList();
         }
 
         public void Insert(IEnumerable<Object> objs)
@@ -34,6 +49,11 @@ namespace Backend.DataAccess
         public void Insert(Object obj)
         {
             _connection.Insert(obj);
+        }
+
+        public void Update(Object obj)
+        {
+            _connection.Update(obj);
         }
 
         public void Remove(IEnumerable<Object> objs)

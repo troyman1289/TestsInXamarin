@@ -12,5 +12,10 @@ namespace Backend.Model.Operator
         {
             return operand1 - operand2;
         }
+
+        public override int Weight
+        {
+            get { return 1; }
+        }
     }
 }

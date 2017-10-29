@@ -44,7 +44,14 @@
     <Compile Include="Interfaces\IRestService.cs" />
     <Compile Include="Interfaces\ISqliteConnectionService.cs" />
     <Compile Include="Model\Base.cs" />
+    <Compile Include="Model\BracketType.cs" />
+    <Compile Include="Model\GlobalCalculation.cs" />
+    <Compile Include="Model\LocalCalculation.cs" />
+    <Compile Include="Model\Operation.cs" />
+    <Compile Include="Model\OperatorType.cs" />
     <Compile Include="Model\Operator\Addition.cs" />
+    <Compile Include="Model\Operator\Division.cs" />
+    <Compile Include="Model\Operator\Multiplication.cs" />
     <Compile Include="Model\Operator\Operator.cs" />
     <Compile Include="Model\Operator\Operators.cs" />
     <Compile Include="Model\Operator\Substraction.cs" />

@@ -45,6 +45,25 @@ namespace ViewModels
 
         #endregion
 
+        #region StartOperand
+
+        private decimal _startOperand = 0;
+
+        public decimal StartOperand
+        {
+            get { return _startOperand; }
+            set
+            {
+                if (_startOperand != value) {
+                    _startOperand = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #endregion
+
+
         #region SaveCalculationCommand
 
         private ICommand _saveCalculationCommand;
@@ -62,7 +81,7 @@ namespace ViewModels
 
         private void HandleSaveCalculation()
         {
-            _calculationManager.AddNewGlobalCalculation(GlobalCalculation);
+            _calculationManager.AddNewGlobalCalculation(GlobalCalculation,StartOperand);
              GlobalCalculation = new GlobalCalculation();
             _mainViewModel.RefreshCalculations();
             _navigationService.GoBack();
