@@ -200,9 +200,12 @@ namespace Backend.Business
                 orderedoperations = orderedoperations.OrderBy(o => o.Order).ToList();
             }
 
+            //Operation with start operand
+            var startOperation = new Operation {Order = 0, Operand = localCalculation.StartOperand};
+            orderedoperations.Add(startOperation);
+
             var endOperation = Summarize(orderedoperations);
-            localCalculation.Result =
-                Math.Round(endOperation.Operator.Calculate(localCalculation.StartOperand, endOperation.Operand),2);
+            localCalculation.Result = Math.Round(endOperation.Operand, 2);
             _dataAccess.Update(localCalculation);
         }
 
@@ -215,11 +218,13 @@ namespace Backend.Business
             //search for operations
             while (orderedOperations.Count >= 2)
             {
-                var maxWeight = orderedOperations
+                var operationsToCheck = orderedOperations
                     .Where(o => o.Order > startOrder)
+                    .ToList();
+                var maxWeight = operationsToCheck
                     .Max(o => o.Operator.Weight);
-                var operationsWithMaxWeight = orderedOperations
-                    .Where(o => o.Operator.Weight == maxWeight && o.Order > startOrder)
+                var operationsWithMaxWeight = operationsToCheck
+                    .Where(o => o.Operator.Weight == maxWeight)
                     .ToList();
 
                 foreach (var operation in operationsWithMaxWeight) {

@@ -1,24 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{C15C1303-BA93-44D8-9BA9-649E4B477364}</ProjectGuid>
+    <ProjectGuid>{669FF3DA-B710-452B-AA74-E6660904A77C}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestsFinal.UWP</RootNamespace>
-    <AssemblyName>TestsFinal.UWP</AssemblyName>
+    <RootNamespace>uwp</RootNamespace>
+    <AssemblyName>uwp</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.14393.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
-    <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <PackageCertificateKeyFile>TestsFinal.UWP_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>uwp_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -100,13 +99,12 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sqlite.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="TestsFinal.UWP_TemporaryKey.pfx" />
+    <None Include="uwp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\Default.rd.xml" />
@@ -132,36 +130,6 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.0.1</Version>
     </PackageReference>
-    <PackageReference Include="SQLite.Net-PCL">
-      <Version>3.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="Xamarin.Forms">
-      <Version>2.3.4.247</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Backend\Backend.csproj">
-      <Project>{1eb99312-6865-47b1-88f6-ec7fc4d83511}</Project>
-      <Name>Backend</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TestsFinal\TestsFinal.csproj">
-      <Project>{a97a979b-f5b1-4e9f-930c-e691e9afabe2}</Project>
-      <Name>TestsFinal</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <SDKReference Include="Microsoft.VCLibs.Desktop, Version=14.0">
-      <Name>Visual C++ 2015 UWP Desktop Runtime for native apps</Name>
-    </SDKReference>
-    <SDKReference Include="Microsoft.VCLibs.Desktop.120, Version=14.0">
-      <Name>Visual C++ 2013 UWP Desktop Runtime for native apps</Name>
-    </SDKReference>
-    <SDKReference Include="SQLite.UWP.2015, Version=3.20.1">
-      <Name>SQLite for Universal Windows Platform</Name>
-    </SDKReference>
-    <SDKReference Include="WindowsMobile, Version=10.0.16299.0">
-      <Name>Windows Mobile Extensions for the UWP</Name>
-    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

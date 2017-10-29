@@ -18,7 +18,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <local:SingleClickListView
-            Grid.Row="0"
+            Grid.Row="1"
             ItemClickCommand="{Binding OpenCalculationCommand}"
             ItemsSource="{Binding GlobalCalculations}"
             SeparatorVisibility="Default">
