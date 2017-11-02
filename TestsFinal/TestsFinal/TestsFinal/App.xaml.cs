@@ -15,10 +15,11 @@ namespace TestsFinal
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new MainPage());
+            var page = new MainPage();
+            MainPage = new NavigationPage(page);
             var navigationService = (NavigationService)ServiceLocator.Current.GetInstance<INavigationService>();
+            navigationService.CurrentPage = page;
             navigationService.Navigation = MainPage.Navigation;
-           // var g = ServiceLocator.Current.GetInstance<MainViewModel>();
         }
 
         protected override void OnStart()

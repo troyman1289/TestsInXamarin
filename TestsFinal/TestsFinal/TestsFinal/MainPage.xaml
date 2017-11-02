@@ -9,18 +9,16 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding AddNewCalculationCommand}" Text="Add" />
         <ToolbarItem Command="{Binding FetchCalculationsCommand}" Text="Fetch" />
-        <ToolbarItem Command="{Binding SaveCalculationsCommand}" Text="Save" />
     </ContentPage.ToolbarItems>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <RelativeLayout HorizontalOptions="FillAndExpand">
+
         <local:SingleClickListView
-            Grid.Row="1"
             ItemClickCommand="{Binding OpenCalculationCommand}"
             ItemsSource="{Binding GlobalCalculations}"
+            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                   Property=Height}"
+            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                  Property=Width}"
             SeparatorVisibility="Default">
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -46,7 +44,19 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </local:SingleClickListView>
-
-    </Grid>
-
+        <Grid
+            BackgroundColor="#66888888"
+            IsVisible="{Binding IsBusy}"
+            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                   Property=Height}"
+            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                  Property=Width}">
+            <ActivityIndicator
+                HeightRequest="120"
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsBusy}"
+                VerticalOptions="Center"
+                WidthRequest="120" />
+        </Grid>
+    </RelativeLayout>
 </ContentPage>

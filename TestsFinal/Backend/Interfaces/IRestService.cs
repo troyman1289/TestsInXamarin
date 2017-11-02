@@ -10,6 +10,5 @@ namespace Backend.Interfaces
     public interface IRestService
     {
         Task<IList<GlobalCalculation>> FetchGlobalCalculations();
-        Task SaveGlobalCalculations(IList<GlobalCalculation> globalCalculations);
     }
 }

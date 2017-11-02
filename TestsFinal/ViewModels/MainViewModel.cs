@@ -16,15 +16,18 @@ namespace ViewModels
     {
         private readonly ICalculationManager _calculationManager;
         private readonly INavigationService _navigationService;
+        private readonly IPopUpService _popUpService;
         private readonly LocalCalculationViewModel _calculationViewModel;
 
         public MainViewModel(
             ICalculationManager calculationManager,
             INavigationService navigationService,
+            IPopUpService popUpService,
             LocalCalculationViewModel calculationViewModel)
         {
             _calculationManager = calculationManager;
             _navigationService = navigationService;
+            _popUpService = popUpService;
             _calculationViewModel = calculationViewModel;
             SetGlobalCalculations();
 
@@ -88,16 +91,8 @@ namespace ViewModels
             foreach (var globalCalculation in calculations) {
                 GlobalCalculations.Add(globalCalculation);
             }
-
-            //add placeholder for new global calculations
-
-            SetGlobalResult();
         }
 
-        private void SetGlobalResult()
-        {
-    
-        }
 
         public void RefreshCalculations()
         {
@@ -165,31 +160,17 @@ namespace ViewModels
             }
         }
 
-        private void HandleFetchCalculation()
+        private async void HandleFetchCalculation()
         {
-
-        }
-
-        #endregion
-
-        #region SaveCalculationsCommand
-
-        private ICommand _saveCalculationsCommand;
-
-        public ICommand SaveCalculationsCommand
-        {
-            get
-            {
-                if (_saveCalculationsCommand == null) {
-                    _saveCalculationsCommand = new RelayCommand(HandleSaveCalculation, () => !IsBusy);
-                }
-                return _saveCalculationsCommand;
+            try {
+                IsBusy = true;
+                await _calculationManager.FetchGlobalCalculationsFromServiceAsync();
+            } catch (Exception ex) {
+                _popUpService.ShowAlertPopUp("Error", ex.Message, () => { });
+            } finally {
+                IsBusy = false;
             }
-        }
-
-        private void HandleSaveCalculation()
-        {
-
+            SetGlobalCalculations();
         }
 
         #endregion
@@ -211,8 +192,13 @@ namespace ViewModels
 
         private void HandleRemoveGlobalCalculation(GlobalCalculation globalCalculation)
         {
-            _calculationManager.RemoveGlobalCalculation(globalCalculation);
-            GlobalCalculations.Remove(globalCalculation);
+            _popUpService.ShowOkCancelPopUp("Remove", "Do you want to remove it?", result => {
+                if (result) {
+                    _calculationManager.RemoveGlobalCalculation(globalCalculation);
+                    GlobalCalculations.Remove(globalCalculation);
+                }
+            });
+
         }
 
         #endregion

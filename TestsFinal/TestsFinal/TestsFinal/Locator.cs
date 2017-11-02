@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Backend.Business;
 using Backend.DataAccess;
 using Backend.Interfaces;
+using Backend.RestService;
 using Backend.Utils;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
@@ -24,7 +25,9 @@ namespace TestsFinal
 
             SimpleIoc.Default.Register<INavigationService>(() => navigationService);
             SimpleIoc.Default.Register<ISqliteConnectionService>(() => connectionService);
+            SimpleIoc.Default.Register<IPopUpService, PopUpService>();
 
+            SimpleIoc.Default.Register<IRestService, RestService>();
             SimpleIoc.Default.Register<IDataAccess,DataAccess>();
             SimpleIoc.Default.Register<ICalculationManager,CalculationManager>();
             SimpleIoc.Default.Register<GlobalCalculationViewModel, GlobalCalculationViewModel>();

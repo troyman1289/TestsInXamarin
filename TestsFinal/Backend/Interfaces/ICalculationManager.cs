@@ -16,8 +16,9 @@ namespace Backend.Interfaces
         void SetOperationString(LocalCalculation localCalculation);
         void LoadGlobalCalculation(GlobalCalculation globalCalculation);
         void AddOperation(LocalCalculation localCalculation,Operation operation);
-        void AddLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation);
+        void AddNewLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation);
         void SetResult(LocalCalculation localCalculation);
         void RefreshGlobalResult(GlobalCalculation globalCalculation);
+        Task FetchGlobalCalculationsFromServiceAsync();
     }
 }

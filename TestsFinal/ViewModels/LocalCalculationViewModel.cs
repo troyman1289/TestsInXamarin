@@ -256,7 +256,7 @@ namespace ViewModels
         private void HandleAddLocalCalculation()
         {
             var newLocalCalculation = new LocalCalculation();
-            _calculationManager.AddLocalCalculation(GlobalCalculation, newLocalCalculation);
+            _calculationManager.AddNewLocalCalculation(GlobalCalculation, newLocalCalculation);
             RefreshAll();
         }
 

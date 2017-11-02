@@ -49,6 +49,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="NavigationService.cs" />
+    <Compile Include="PopUpService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingleClickListView.cs" />
   </ItemGroup>

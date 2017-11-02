@@ -12,10 +12,34 @@ namespace Backend.Business
     public class CalculationManager : ICalculationManager
     {
         private readonly IDataAccess _dataAccess;
+        private readonly IRestService _restService;
 
-        public CalculationManager(IDataAccess dataAccess)
+        public CalculationManager(
+            IDataAccess dataAccess,
+            IRestService restService)
         {
             _dataAccess = dataAccess;
+            _restService = restService;
+        }
+
+        public async Task FetchGlobalCalculationsFromServiceAsync()
+        {
+            var globalCalculations = await _restService.FetchGlobalCalculations();
+            _dataAccess.Insert(globalCalculations);
+            foreach (var globalCalculation in globalCalculations) {
+                foreach (var localCalculation in globalCalculation.LocalCalculations) {
+                    localCalculation.ParentGlobalCalculation = globalCalculation;
+                    localCalculation.ParentGlobalCalculationId = globalCalculation.Id;
+                    _dataAccess.Insert(localCalculation);
+                    foreach (var operation in localCalculation.Operations) {
+                        operation.ParentLocalCalculation = localCalculation;
+                        operation.ParentLocalCalculationId = localCalculation.Id;
+                        _dataAccess.Insert(operation);
+                    }
+                    SetResult(localCalculation);
+                }
+                RefreshGlobalResult(globalCalculation);
+            }
         }
 
         public IList<GlobalCalculation> GetAllGlobalCalculations()
@@ -124,7 +148,7 @@ namespace Backend.Business
             _dataAccess.Insert(operation);
         }
 
-        public void AddLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation)
+        public void AddNewLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation)
         {
             int order = globalCalculation.LocalCalculations.Any()
                 ? globalCalculation.LocalCalculations.Max(o => o.Order) + 1
@@ -133,11 +157,16 @@ namespace Backend.Business
             localCalculation.ParentGlobalCalculationId = globalCalculation.Id;
             localCalculation.ParentGlobalCalculation = globalCalculation;
             localCalculation.Order = order;
+
             if (globalCalculation.LocalCalculations.Any()) {
                 localCalculation.StartOperand = globalCalculation.LocalCalculations.Last().Result;
             }
             globalCalculation.LocalCalculations.Add(localCalculation);
             _dataAccess.Insert(localCalculation);
+
+            foreach (var operation in localCalculation.Operations.ToList()) {
+                AddOperation(localCalculation, operation);
+            }
         }
 
         public void SetOperationString(LocalCalculation localCalculation)
@@ -256,5 +285,6 @@ namespace Backend.Business
             summarizedOperation.Order = operation1.Order;
             return summarizedOperation;
         }
+
     }
 }
