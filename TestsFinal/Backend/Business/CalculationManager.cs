@@ -163,10 +163,6 @@ namespace Backend.Business
             }
             globalCalculation.LocalCalculations.Add(localCalculation);
             _dataAccess.Insert(localCalculation);
-
-            foreach (var operation in localCalculation.Operations.ToList()) {
-                AddOperation(localCalculation, operation);
-            }
         }
 
         public void SetOperationString(LocalCalculation localCalculation)
@@ -223,7 +219,7 @@ namespace Backend.Business
                     .ToList();
 
                 var summarizedOperation = Summarize(toSummarize);
-                summarizedOperation.BracketType = BracketType.Close;
+                summarizedOperation.BracketType = BracketType.None;
                 orderedoperations = orderedoperations.Except(toSummarize).ToList();
                 orderedoperations.Add(summarizedOperation);
                 orderedoperations = orderedoperations.OrderBy(o => o.Order).ToList();
@@ -262,6 +258,7 @@ namespace Backend.Business
                     orderedOperations.Remove(operation1);
                     orderedOperations.Remove(operation);
                     orderedOperations.Add(summarizedOperation);
+                    orderedOperations = orderedOperations.OrderBy(o => o.Order).ToList();
                 }
 
                 orderedOperations = orderedOperations.OrderBy(o => o.Order).ToList();

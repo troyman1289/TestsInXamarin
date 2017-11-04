@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Backend.Business;
 using Backend.Interfaces;
 using Backend.Model;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using NUnit.Framework;
 
-namespace UnitTest
+namespace NUnit.UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class CalculationTest
     {
         private static CalculationManager _manager;
@@ -20,20 +17,20 @@ namespace UnitTest
         ///// <summary>
         ///// general setup - called once
         ///// </summary>
-        [ClassInitialize]
-        public static void ClassInit(Microsoft.VisualStudio.TestTools.UnitTesting.TestContext context)
+        [OneTimeSetUp]
+        public static void ClassInit()
         {
             var globalCalculations = new List<GlobalCalculation>();
             var mockDatabase = new Mock<IDataAccess>();
             mockDatabase.Setup(access => access.GetAllGlobalCalculations()).Returns(globalCalculations);
-            _manager = new CalculationManager(mockDatabase.Object);
+            _manager = new CalculationManager(mockDatabase.Object,null);
             _globalCalculation = new GlobalCalculation();
         }
 
         /// <summary>
         /// general cleanup - called once
         /// </summary>
-        [ClassCleanup]
+        [OneTimeTearDown]
         public static void Cleanup()
         {
 
@@ -42,8 +39,8 @@ namespace UnitTest
         /// <summary>
         /// Start with 5
         /// </summary>
-        [TestMethod]
-        public void C1_AddGlobalCalculationTest()
+        [Test, Order(1)]
+        public void AddGlobalCalculationTest()
         {
             _globalCalculation = new GlobalCalculation();
             _manager.AddNewGlobalCalculation(_globalCalculation, 5);
@@ -54,9 +51,10 @@ namespace UnitTest
         /// <summary>
         /// 5+6
         /// </summary>
-        [TestMethod]
+        [Test, Order(2)]
         public void C2_AddOperationToFirstLocalCalculationTest()
         {
+            //C1_AddGlobalCalculationTest();
             var firstLocalCalculation = _globalCalculation.LocalCalculations.First();
             var operation = new Operation
             {
@@ -74,7 +72,7 @@ namespace UnitTest
         /// <summary>
         /// 5+6*(2-4) = -7
         /// </summary>
-        [TestMethod]
+        [Test, Order(3)]
         public void C3_AddOperationsWithBracketToLocalCalculationTest()
         {
             var firstLocalCalculation = _globalCalculation.LocalCalculations.First();
@@ -101,8 +99,8 @@ namespace UnitTest
         /// <summary>
         /// 5+6*(2-4)+2*11 = 15
         /// </summary>
-        [TestMethod]
-        public void C4_AddEndOperationsToLocalCalculationTest()
+        [Test, Order(4)]
+        public void AddEndOperationsToLocalCalculationTest()
         {
             var firstLocalCalculation = _globalCalculation.LocalCalculations.First();
             var operation = new Operation {
@@ -124,7 +122,7 @@ namespace UnitTest
         /// 5+6*(2-4)+2*11 = 15
         /// 15/2*4 = 30
         /// </summary>
-        [TestMethod]
+        [Test, Order(5)]
         public void C4_AddSecondLocalOperationWithOperations()
         {
             var secondLocalCalculation = new LocalCalculation();

@@ -37,7 +37,7 @@ namespace UnitTest
         public void TestSetup()
         {
             var mockDatabase = new Mock<IDataAccess>();
-            _manager = new CalculationManager(mockDatabase.Object);
+            _manager = new CalculationManager(mockDatabase.Object,null);
         }
 
         /// <summary>

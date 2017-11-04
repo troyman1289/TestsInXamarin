@@ -14,7 +14,7 @@ namespace TestsFinal.iOS
 {
     public class Sqlite : ISqliteConnectionService
     {
-        public SQLiteConnection GetConnection()
+        public SQLiteConnection GetConnection(string filename = "ShoppingList.db3")
         {
             var sqliteFilename = "Tests.db3";
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal); // Documents folder
@@ -26,6 +26,21 @@ namespace TestsFinal.iOS
             // Return the database connection
             return conn;
 
+        }
+
+        public void TeardownAndDelete(string filename)
+        {
+            var connection = GetConnection(filename);
+            if (connection == null)
+                return;
+
+            var path = connection.DatabasePath;
+            connection.Close();
+            connection = null;
+
+            if (File.Exists(path)) {
+                File.Delete(path);
+            }
         }
     }
 }

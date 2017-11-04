@@ -9,6 +9,8 @@ namespace Backend.Interfaces
 {
     public interface ISqliteConnectionService
     {
-        SQLiteConnection GetConnection();
+        SQLiteConnection GetConnection(string filename = "ShoppingList.db3");
+
+        void TeardownAndDelete(string filename);
     }
 }
