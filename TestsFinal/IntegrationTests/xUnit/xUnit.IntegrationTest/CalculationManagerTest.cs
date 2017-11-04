@@ -15,11 +15,12 @@ namespace xUnit.IntegrationTest
     public class CalculationManagerTest : IDisposable
     {
         private ICalculationManager _calculationManager;
-        private ISqliteConnectionService _connectionService;
+        private ISqliteConnectionForTest _connectionService;
 
         public CalculationManagerTest()
         {
-            _connectionService = DependencyService.Get<ISqliteConnectionService>();
+            _connectionService = DependencyService.Get<ISqliteConnectionForTest>();
+           // _connectionService.TeardownAndDelete();
             var dataAccess = new DataAccess(_connectionService);
             var restService = new RestService();
             _calculationManager = new CalculationManager(dataAccess, restService);
@@ -27,10 +28,10 @@ namespace xUnit.IntegrationTest
 
         public void Dispose()
         {
-
+            _connectionService.TeardownAndDelete();
         }
 
-        [Fact]
+        [Fact(DisplayName = "AddGlobalCalculationTest")]
         public void AddGlobalCalculationTest()
         {
             var globalCalculation = new GlobalCalculation();
@@ -46,7 +47,7 @@ namespace xUnit.IntegrationTest
             Assert.Equal(connection.Table<LocalCalculation>().First().StartOperand,5);
         }
 
-        [Fact]
+        [Fact(DisplayName = "AddLocalCalculationTest")]
         public void AddLocalCalculationTest()
         {
             var globalCalculation = new GlobalCalculation();
@@ -60,14 +61,14 @@ namespace xUnit.IntegrationTest
             Assert.Equal(connection.Table<LocalCalculation>().Count(), 2);
         }
 
-        [Fact]
+        [Fact(DisplayName = "FetchDataFromServiceTest")]
         public void FetchDataFromServiceTest()
         {
             _calculationManager.FetchGlobalCalculationsFromServiceAsync().Wait();
             var connection = _connectionService.GetConnection();
             Assert.Equal(connection.Table<GlobalCalculation>().Count(), 1);
-            Assert.Equal(connection.Table<LocalCalculation>().Count(), 1);
-            Assert.Equal(connection.Table<GlobalCalculation>().First().Result,11);
+            Assert.Equal(connection.Table<LocalCalculation>().Count(), 2);
+            Assert.Equal(connection.Table<GlobalCalculation>().First().Result,9);
         }
     }
 }

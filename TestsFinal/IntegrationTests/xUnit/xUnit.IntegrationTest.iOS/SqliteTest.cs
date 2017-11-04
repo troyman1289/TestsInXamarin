@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using Backend.Interfaces;
-using Foundation;
 using SQLite.Net;
-using TestsFinal.iOS;
-using UIKit;
+using xUnit.IntegrationTest.iOS;
 
-[assembly: Xamarin.Forms.Dependency(typeof(Sqlite))]
-namespace TestsFinal.iOS
+[assembly: Xamarin.Forms.Dependency(typeof(SqliteTest))]
+namespace xUnit.IntegrationTest.iOS
 {
-    public class Sqlite : ISqliteConnectionService
+    public class SqliteTest : ISqliteConnectionForTest
     {
         public SQLiteConnection GetConnection()
         {
@@ -26,6 +20,21 @@ namespace TestsFinal.iOS
             // Return the database connection
             return conn;
 
+        }
+
+        public void TeardownAndDelete()
+        {
+            var connection = GetConnection();
+            if (connection == null)
+                return;
+
+            var path = connection.DatabasePath;
+            connection.Close();
+            connection = null;
+
+            if (File.Exists(path)) {
+                File.Delete(path);
+            }
         }
     }
 }

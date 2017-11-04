@@ -37,6 +37,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CalculationManagerTest.cs" />
+    <Compile Include="ISqliteConnectionForTest.cs" />
+    <Compile Include="MainViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +74,10 @@
     <ProjectReference Include="..\..\..\Backend\Backend.csproj">
       <Project>{1eb99312-6865-47b1-88f6-ec7fc4d83511}</Project>
       <Name>Backend</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ViewModels\ViewModels.csproj">
+      <Project>{4FB7B8A0-6571-4B41-B44D-5206B4583E7B}</Project>
+      <Name>ViewModels</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

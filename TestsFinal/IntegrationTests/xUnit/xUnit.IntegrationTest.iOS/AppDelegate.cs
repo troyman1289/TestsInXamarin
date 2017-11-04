@@ -1,5 +1,6 @@
 ﻿using Foundation;
 using UIKit;
+using Xunit.Runner;
 using Xunit.Sdk;
 
 namespace xUnit.IntegrationTest.iOS
@@ -7,7 +8,7 @@ namespace xUnit.IntegrationTest.iOS
     // The UIApplicationDelegate for the application. This class is responsible for launching the
     // User Interface of the application, as well as listening (and optionally responding) to application events from iOS.
     [Register("AppDelegate")]
-    public class AppDelegate : UIApplicationDelegate
+    public class AppDelegate : RunnerAppDelegate
     {
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
@@ -17,7 +18,7 @@ namespace xUnit.IntegrationTest.iOS
 
 
             // tests can be inside the main assembly
-            AddTestAssembly(typeof(TimeStudyManagerTest).Assembly);
+            AddTestAssembly(typeof(CalculationManagerTest).Assembly);
             // otherwise you need to ensure that the test assemblies will 
             // become part of the app bundle
             //AddTestAssembly(typeof(PortableTests).Assembly);

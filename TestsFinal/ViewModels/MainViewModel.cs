@@ -30,7 +30,6 @@ namespace ViewModels
             _popUpService = popUpService;
             _calculationViewModel = calculationViewModel;
             SetGlobalCalculations();
-
         }
 
 
@@ -43,7 +42,8 @@ namespace ViewModels
             get { return _isBusy; }
             set
             {
-                if (_isBusy != value) {
+                if (_isBusy != value)
+                {
                     _isBusy = value;
                     OnPropertyChanged();
                 }
@@ -54,7 +54,8 @@ namespace ViewModels
 
         #region GlobalCalculations
 
-        private readonly ObservableCollection<GlobalCalculation> _globalCalculations = new ObservableCollection<GlobalCalculation>();
+        private readonly ObservableCollection<GlobalCalculation> _globalCalculations =
+            new ObservableCollection<GlobalCalculation>();
 
         /// <summary>
         /// Collection of Operations
@@ -75,7 +76,8 @@ namespace ViewModels
             get { return _globalResult; }
             set
             {
-                if (_globalResult != value) {
+                if (_globalResult != value)
+                {
                     _globalResult = value;
                     OnPropertyChanged();
                 }
@@ -88,7 +90,8 @@ namespace ViewModels
         {
             var calculations = _calculationManager.GetAllGlobalCalculations();
             GlobalCalculations.Clear();
-            foreach (var globalCalculation in calculations) {
+            foreach (var globalCalculation in calculations)
+            {
                 GlobalCalculations.Add(globalCalculation);
             }
         }
@@ -107,8 +110,10 @@ namespace ViewModels
         {
             get
             {
-                if (_openCalculationCommand == null) {
-                    _openCalculationCommand = new RelayCommand<GlobalCalculation>(HandleOpenLocalCalculation, (globalCalculation) => !IsBusy);
+                if (_openCalculationCommand == null)
+                {
+                    _openCalculationCommand =
+                        new RelayCommand<GlobalCalculation>(HandleOpenLocalCalculation, (globalCalculation) => !IsBusy);
                 }
                 return _openCalculationCommand;
             }
@@ -131,7 +136,8 @@ namespace ViewModels
         {
             get
             {
-                if (_addNewCalculationCommand == null) {
+                if (_addNewCalculationCommand == null)
+                {
                     _addNewCalculationCommand = new RelayCommand(HandleAddNewCalculation, () => !IsBusy);
                 }
                 return _addNewCalculationCommand;
@@ -153,7 +159,8 @@ namespace ViewModels
         {
             get
             {
-                if (_fetchCalculationsCommand == null) {
+                if (_fetchCalculationsCommand == null)
+                {
                     _fetchCalculationsCommand = new RelayCommand(HandleFetchCalculation, () => !IsBusy);
                 }
                 return _fetchCalculationsCommand;
@@ -162,12 +169,17 @@ namespace ViewModels
 
         private async void HandleFetchCalculation()
         {
-            try {
+            try
+            {
                 IsBusy = true;
                 await _calculationManager.FetchGlobalCalculationsFromServiceAsync();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 _popUpService.ShowAlertPopUp("Error", ex.Message, () => { });
-            } finally {
+            }
+            finally
+            {
                 IsBusy = false;
             }
             SetGlobalCalculations();
@@ -183,8 +195,10 @@ namespace ViewModels
         {
             get
             {
-                if (_removeGlobalCalculationCommand == null) {
-                    _removeGlobalCalculationCommand = new RelayCommand<GlobalCalculation>(HandleRemoveGlobalCalculation);
+                if (_removeGlobalCalculationCommand == null)
+                {
+                    _removeGlobalCalculationCommand =
+                        new RelayCommand<GlobalCalculation>(HandleRemoveGlobalCalculation);
                 }
                 return _removeGlobalCalculationCommand;
             }
@@ -194,14 +208,17 @@ namespace ViewModels
         {
             _popUpService.ShowOkCancelPopUp("Remove", "Do you want to remove it?", result => {
                 if (result) {
-                    _calculationManager.RemoveGlobalCalculation(globalCalculation);
-                    GlobalCalculations.Remove(globalCalculation);
+                    RemoveGlobalCalculation(globalCalculation);
                 }
             });
+        }
 
+        private void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
+        {
+            _calculationManager.RemoveGlobalCalculation(globalCalculation);
+            GlobalCalculations.Remove(globalCalculation);
         }
 
         #endregion
-
     }
 }
