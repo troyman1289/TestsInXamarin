@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace NUnit.IntegrationTest
 {
     [TestFixture]
-    public class TestClass
+    public class TestClassX
     {
         [Test]
         public void TestMethod()

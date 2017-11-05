@@ -1,5 +1,4 @@
-// ***********************************************************************
-// Copyright (c) 2015 Charlie Poole
+﻿// Copyright (c) 2017 Charlie Poole
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -21,37 +20,27 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // ***********************************************************************
 
-using Foundation;
-using UIKit;
+using System.Reflection;
+using NUnit.Runner.Services;
 
-namespace NUnit.IntegrationTest.iOS1
+namespace NUnit.IntegrationTest.UWP
 {
-    // The UIApplicationDelegate for the application. This class is responsible for launching the 
-    // User Interface of the application, as well as listening (and optionally responding) to 
-    // application events from iOS.
-    [Register("AppDelegate")]
-    public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
+    public sealed partial class MainPage
     {
-        //
-        // This method is invoked when the application has loaded and is ready to run. In this 
-        // method you should instantiate the window, load the UI into it and then make the window
-        // visible.
-        //
-        // You have 17 seconds to return from this method, or iOS will terminate your application.
-        //
-        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+        public MainPage()
         {
-            global::Xamarin.Forms.Forms.Init();            
+            InitializeComponent();
 
-            // This will load all tests within the current project
+            // Windows Universal will not load all tests within the current project,
+            // you must do it explicitly below
             var nunit = new NUnit.Runner.App();
 
-            // If you want to add tests in another assembly
-            //nunit.AddTestAssembly(typeof(MyTests).Assembly);
+            // If you want to add tests in another assembly, add a reference and
+            // duplicate the following line with a type from the referenced assembly
+            nunit.AddTestAssembly(typeof(CalculationManagerTest).GetTypeInfo().Assembly);
 
             // Available options for testing
-            nunit.Options = new TestOptions
-            {
+            nunit.Options = new TestOptions {
                 // If True, the tests will run automatically when the app starts
                 // otherwise you must run them manually.
                 AutoRun = true,
@@ -61,15 +50,17 @@ namespace NUnit.IntegrationTest.iOS1
 
                 // Information about the tcp listener host and port.
                 // For now, send result as XML to the listening server.
-                // TcpWriterParameters = new TcpWriterInfo("192.168.0.108", 13000),
+                // NOTE: Your UWP App must have Private Networks capability enabled
+                //TcpWriterParameters = new TcpWriterInfo("192.168.0.108", 13000),
 
                 // Creates a NUnit Xml result file on the host file system using PCLStorage library.
-                CreateXmlResultFile = false
+                CreateXmlResultFile = false,
+
+                // Choose a different path for the xml result file
+                // ResultFilePath = System.IO.Path.Combine(Windows.Storage.ApplicationData.Current.TemporaryFolder.Path, "Nunit", "Results.xml")
             };
 
             LoadApplication(nunit);
-
-            return base.FinishedLaunching(app, options);
-		}
+        }
     }
 }

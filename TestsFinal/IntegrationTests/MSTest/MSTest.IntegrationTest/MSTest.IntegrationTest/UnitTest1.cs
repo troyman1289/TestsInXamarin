@@ -9,6 +9,7 @@ namespace MSTest.IntegrationTest
         [TestMethod]
         public void TestMethod1()
         {
+
         }
     }
 }

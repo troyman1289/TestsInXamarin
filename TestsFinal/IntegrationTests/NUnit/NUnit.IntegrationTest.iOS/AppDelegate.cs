@@ -24,7 +24,7 @@
 using System;
 using System.IO;
 using Foundation;
-
+using NUnit.IntegrationTest.iOS;
 using NUnit.Runner.Services;
 
 using UIKit;
@@ -52,7 +52,7 @@ namespace NUnit.Runner.Tests
             var nunit = new NUnit.Runner.App();
 
             // If you want to add tests in another assembly
-            //nunit.AddTestAssembly(typeof(MyTests).Assembly);
+            nunit.AddTestAssembly(typeof(TestClass).Assembly);
 
             // Available options for testing
             nunit.Options = new TestOptions {

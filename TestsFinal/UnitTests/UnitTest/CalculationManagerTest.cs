@@ -24,11 +24,11 @@ namespace UnitTest
         ///// <summary>
         ///// general cleanup - called once
         ///// </summary>
-        //[ClassCleanup]
-        //public static void Cleanup()
-        //{
+        [ClassCleanup]
+        public static void Cleanup()
+        {
 
-        //}
+        }
 
         /// <summary>
         /// Setup before each test

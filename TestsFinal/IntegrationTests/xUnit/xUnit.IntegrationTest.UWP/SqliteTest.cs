@@ -14,9 +14,7 @@ namespace xUnit.IntegrationTest.UWP
 {
     public class SqliteTest : ISqliteConnectionForTest
     {
-
-
-        public SQLiteConnection GetConnection(string filename = "ShoppingList.db3")
+        public SQLiteConnection GetConnection()
         {
             var sqliteFilename = "ShoppingListTest.db3";
             var path = Path.Combine(ApplicationData.Current.LocalFolder.Path, sqliteFilename);
@@ -26,9 +24,9 @@ namespace xUnit.IntegrationTest.UWP
             return connection;
         }
 
-        public void TeardownAndDelete(string filename)
+        public void TeardownAndDelete()
         {
-            var connection = GetConnection(filename);
+            var connection = GetConnection();
             if (connection == null)
                 return;
 

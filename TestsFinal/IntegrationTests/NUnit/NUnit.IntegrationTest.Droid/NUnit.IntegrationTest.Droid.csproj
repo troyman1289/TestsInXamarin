@@ -108,12 +108,6 @@
   <ItemGroup>
     <Content Include="MainActivity.cs.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NUnit.IntegrationTest\NUnit.IntegrationTest.csproj">
-      <Project>{35184e31-5f24-4998-b462-2973acfddadc}</Project>
-      <Name>NUnit.IntegrationTest</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -23,7 +23,7 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("NUnit.IntegrationTest.iOS1")]
+[assembly: AssemblyTitle("NUnit.IntegrationTest.iOS")]
 [assembly: AssemblyDescription("NUnit Test Runner for iOS")]
 
 [assembly: AssemblyCompany("NUnit Software")]
