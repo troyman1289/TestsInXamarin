@@ -9,6 +9,7 @@ using Backend.Interfaces;
 using Backend.Model;
 using Backend.Utils;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Practices.ServiceLocation;
 
 namespace ViewModels
 {
@@ -216,6 +217,14 @@ namespace ViewModels
         private void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
         {
             _calculationManager.RemoveGlobalCalculation(globalCalculation);
+            GlobalCalculations.Remove(globalCalculation);
+        }
+
+        private void RemoveGlobalCalculationWithLocator(GlobalCalculation globalCalculation)
+        {
+            //_calculationManager.RemoveGlobalCalculation(globalCalculation);
+            var manager = ServiceLocator.Current.GetInstance<ICalculationManager>();
+            manager.RemoveGlobalCalculation(globalCalculation);
             GlobalCalculations.Remove(globalCalculation);
         }
 

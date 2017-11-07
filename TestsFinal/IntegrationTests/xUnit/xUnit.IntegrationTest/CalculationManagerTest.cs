@@ -41,10 +41,10 @@ namespace xUnit.IntegrationTest
             //Now we expect a global calculation and a local calculation
             //we ask the database directly   
             var connection = _connectionService.GetConnection();
-            Assert.Equal(connection.Table<GlobalCalculation>().Count(),1);
-            Assert.Equal(connection.Table<LocalCalculation>().Count(),1);
-            Assert.Equal(connection.Table<GlobalCalculation>().First().Label,"global");
-            Assert.Equal(connection.Table<LocalCalculation>().First().StartOperand,5);
+            Assert.Equal(1, connection.Table<GlobalCalculation>().Count());
+            Assert.Equal(1, connection.Table<LocalCalculation>().Count());
+            Assert.Equal("global", connection.Table<GlobalCalculation>().First().Label);
+            Assert.Equal(5, connection.Table<LocalCalculation>().First().StartOperand);
         }
 
         [Fact(DisplayName = "AddLocalCalculationTest")]
@@ -58,7 +58,7 @@ namespace xUnit.IntegrationTest
             _calculationManager.AddNewLocalCalculation(globalCalculation, localCalculation);
 
             var connection = _connectionService.GetConnection();
-            Assert.Equal(connection.Table<LocalCalculation>().Count(), 2);
+            Assert.Equal(2, connection.Table<LocalCalculation>().Count());
         }
 
         [Fact(DisplayName = "FetchDataFromServiceTest")]
@@ -66,9 +66,9 @@ namespace xUnit.IntegrationTest
         {
             _calculationManager.FetchGlobalCalculationsFromServiceAsync().Wait();
             var connection = _connectionService.GetConnection();
-            Assert.Equal(connection.Table<GlobalCalculation>().Count(), 1);
-            Assert.Equal(connection.Table<LocalCalculation>().Count(), 2);
-            Assert.Equal(connection.Table<GlobalCalculation>().First().Result,9);
+            Assert.Equal(1, connection.Table<GlobalCalculation>().Count());
+            Assert.Equal(2, connection.Table<LocalCalculation>().Count());
+            Assert.Equal(9, connection.Table<GlobalCalculation>().First().Result);
         }
     }
 }
