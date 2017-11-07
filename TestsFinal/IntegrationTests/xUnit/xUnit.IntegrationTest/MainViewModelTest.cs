@@ -28,7 +28,7 @@ namespace xUnit.IntegrationTest
 
         public MainViewModelTest()
         {
-            Locator.Init();
+            //Locator.Init();
             _connectionService = DependencyService.Get<ISqliteConnectionForTest>();
             var dataAccess = new DataAccess(_connectionService);
             var restService = new RestService();

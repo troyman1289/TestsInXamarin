@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Backend.Model;
 using SQLite.Net;
 using xUnit.IntegrationTest.Droid;
 using Environment = System.Environment;
@@ -25,13 +26,9 @@ namespace xUnit.IntegrationTest.Droid
             if (connection == null)
                 return;
 
-            var path = connection.DatabasePath;
-            connection.Close();
-            connection = null;
-
-            if (File.Exists(path)) {
-                File.Delete(path);
-            }
+            connection.DeleteAll<Operation>();
+            connection.DeleteAll<LocalCalculation>();
+            connection.DeleteAll<GlobalCalculation>();
         }
     }
 }

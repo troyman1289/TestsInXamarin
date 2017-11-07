@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Xunit.Runners.UI;
+using Xunit.Sdk;
 
 namespace xUnit.IntegrationTest.UWP
 {
@@ -26,7 +27,7 @@ namespace xUnit.IntegrationTest.UWP
     {
         protected override void OnInitializeRunner()
         {
-            AddTestAssembly(typeof(CalculationManagerTest).GetTypeInfo().Assembly);
+            AddTestAssembly(typeof(MainViewModelTest).GetTypeInfo().Assembly);
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
