@@ -2,31 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Backend.Business;
 using Backend.DataAccess;
 using Backend.Interfaces;
 using Backend.Interfaces.Mocks;
 using Backend.Model;
 using Backend.RestService;
+using NUnit.Framework;
 using PCLMock;
 using ViewModels;
 using Xamarin.Forms;
-using Xunit;
 
-namespace xUnit.IntegrationTest
+namespace NUnit.IntegrationTest
 {
 
-    public class MainViewModelTest : IDisposable
+    public class MainViewModelTest
     {
-        private readonly MainViewModel _mainViewModel;
-        private readonly ISqliteConnectionForTest _connectionService;
-        private readonly ICalculationManager _calculationManager;
-        private readonly PopUpForTest _popUpService;
-        private readonly PopUpServiceMock _popUpServiceMock;
+        private MainViewModel _mainViewModel;
+        private ISqliteConnectionForTest _connectionService;
+        private ICalculationManager _calculationManager;
+        private PopUpForTest _popUpService;
+        private PopUpServiceMock _popUpServiceMock;
 
-        public MainViewModelTest()
+        [SetUp]
+        public void Setup()
         {
             Locator.Init();
             _connectionService = DependencyService.Get<ISqliteConnectionForTest>();
@@ -38,13 +37,15 @@ namespace xUnit.IntegrationTest
             _mainViewModel = new MainViewModel(_calculationManager, null, _popUpServiceMock.MockedObject, null);
         }
 
-        public void Dispose()
+        [TearDown]
+        public void Teardown()
         {
             _connectionService.TeardownAndDelete();
         }
 
 
-        [Fact(DisplayName = "DeleteGlobalCalculation",Skip = "Skip")]
+        [Test]
+        [Ignore("Skip")]
         public void DeleteGlobalCalculationWithFakeImplementation()
         {
             _popUpService.ActionResults = new List<bool>{false,true};
@@ -55,16 +56,15 @@ namespace xUnit.IntegrationTest
             
             //Assert.Collection(_mainViewModel.GlobalCalculations,gc => gc.Order = 1);
             //TODO ID weg - und fragen, warum nicht true wird --> gc werden neu retrieved
-            Assert.NotEmpty(_mainViewModel.GlobalCalculations);
+            Assert.IsNotEmpty(_mainViewModel.GlobalCalculations);
             globalCalculation = _mainViewModel.GlobalCalculations.First();
             _mainViewModel.RemoveGlobalCalculationCommand.Execute(globalCalculation);
-            Assert.DoesNotContain(_mainViewModel.GlobalCalculations, calculation => calculation == globalCalculation);
-            Assert.Empty(_connectionService.GetConnection().Table<GlobalCalculation>());
+            Assert.False(_mainViewModel.GlobalCalculations.Contains(globalCalculation));
+            Assert.IsEmpty(_connectionService.GetConnection().Table<GlobalCalculation>());
         }
 
-        [Theory(DisplayName = "DeleteGlobalCalculationWithMock")]
-        [InlineData(false,false)]
-        [InlineData(true, true)]
+        [TestCase(false,false)]
+        [TestCase(true, true)]
         public void DeleteGlobalCalculationWithMock(bool popSuccess, bool shouldbeDeleted)
         {
 
@@ -82,14 +82,14 @@ namespace xUnit.IntegrationTest
             _mainViewModel.RemoveGlobalCalculationCommand.Execute(globalCalculation);
 
             if (shouldbeDeleted) {
-                Assert.DoesNotContain(_mainViewModel.GlobalCalculations, calculation => calculation == globalCalculation);
-                Assert.Empty(_connectionService.GetConnection().Table<GlobalCalculation>());
+                Assert.False(_mainViewModel.GlobalCalculations.Contains(globalCalculation));
+                Assert.IsEmpty(_connectionService.GetConnection().Table<GlobalCalculation>());
             } else {
-                Assert.NotEmpty(_mainViewModel.GlobalCalculations);
+                Assert.IsNotEmpty(_mainViewModel.GlobalCalculations);
             }
         }
 
-        [Fact(DisplayName = "DeleteGlobalCalculationWithoutCommand")]
+        [Test]
         public void DeleteGlobalCalculationWithoutCommand()
         {
             var globalCalculation = new GlobalCalculation();
@@ -102,10 +102,10 @@ namespace xUnit.IntegrationTest
                 .First(m => m.Name == "RemoveGlobalCalculation")
                 .Invoke(_mainViewModel, new[] {globalCalculation});
 
-            Assert.Empty(_mainViewModel.GlobalCalculations);
+            Assert.IsEmpty(_mainViewModel.GlobalCalculations);
         }
 
-        [Fact(DisplayName = "DeleteGlobalCalculationWithLocator")]
+        [Test]
         public void DeleteGlobalCalculationWithLocator()
         {
             var globalCalculation = new GlobalCalculation();
@@ -118,7 +118,7 @@ namespace xUnit.IntegrationTest
                 .First(m => m.Name == "RemoveGlobalCalculationWithLocator")
                 .Invoke(_mainViewModel, new[] { globalCalculation });
 
-            Assert.Empty(_mainViewModel.GlobalCalculations);
+            Assert.IsEmpty(_mainViewModel.GlobalCalculations);
         }
     }
 }

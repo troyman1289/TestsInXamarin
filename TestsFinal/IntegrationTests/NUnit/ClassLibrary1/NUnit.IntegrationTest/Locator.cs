@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Backend.Business;
+﻿using Backend.Business;
 using Backend.DataAccess;
 using Backend.Interfaces;
 using Backend.RestService;
@@ -11,15 +6,14 @@ using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using Xamarin.Forms;
 
-namespace xUnit.IntegrationTest
+namespace NUnit.IntegrationTest
 {
     class Locator
     {
         private static bool _isReady = false;
         public static void Init()
         {
-            if (_isReady)
-                return;
+            if (_isReady) return;
 
             _isReady = true;
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);

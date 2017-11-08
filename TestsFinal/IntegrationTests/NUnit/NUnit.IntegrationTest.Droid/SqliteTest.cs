@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage;
-using Backend.Interfaces;
+﻿using System.IO;
 using Backend.Model;
+using NUnit.IntegrationTest.Droid;
 using SQLite.Net;
-using xUnit.IntegrationTest.UWP;
+using Environment = System.Environment;
 
 [assembly: Xamarin.Forms.Dependency(typeof(SqliteTest))]
-namespace xUnit.IntegrationTest.UWP
+namespace NUnit.IntegrationTest.Droid
 {
     public class SqliteTest : ISqliteConnectionForTest
     {
         public SQLiteConnection GetConnection()
         {
-            var sqliteFilename = "IntegrationTest.db3";
-            var path = Path.Combine(ApplicationData.Current.LocalFolder.Path, sqliteFilename);
-            var platform = new SQLite.Net.Platform.WinRT.SQLitePlatformWinRT();
+            var sqliteFilename = "Tests.db3";
+            var folderPath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            var path = Path.Combine(folderPath, sqliteFilename);
+            var platform = new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid();
             var connection = new SQLiteConnection(platform, path);
 
             return connection;
