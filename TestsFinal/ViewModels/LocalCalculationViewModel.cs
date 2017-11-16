@@ -133,42 +133,6 @@ namespace ViewModels
 
         #endregion
 
-        //#region SelectedBracketType
-
-        //private BracketType _selectedBracketType;
-
-        //public BracketType SelectedBracketType
-        //{
-        //    get { return _selectedBracketType; }
-        //    set
-        //    {
-        //        if (_selectedBracketType != value) {
-        //            _selectedBracketType = value;
-        //            OnPropertyChanged();
-        //        }
-        //    }
-        //}
-
-        //#endregion
-
-        //#region SelectedOperator
-
-        //private Operator _selectedOperator;
-
-        //public Operator SelectedOperator
-        //{
-        //    get { return _selectedOperator; }
-        //    set
-        //    {
-        //        if (_selectedOperator != value) {
-        //            _selectedOperator = value;
-        //            OnPropertyChanged();
-        //        }
-        //    }
-        //}
-
-        //#endregion
-
         #region SelectedOperator
 
         private Operator _selectedOperator = Backend.Model.Operator.Operators.Addition;

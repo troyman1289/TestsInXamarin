@@ -17,8 +17,8 @@ using Toolbar = Android.Widget.Toolbar;
 
 namespace TestsFinal.DroidNative
 {
-    [Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
-    public class MainActivity : AppCompatActivity
+    //[Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
+    public class MainActivityWithMVVM : AppCompatActivity
     {
         private RelativeLayout _progressBarRelativeLayout;
         private ListView _listView;
@@ -39,14 +39,17 @@ namespace TestsFinal.DroidNative
             var getButton = toolbar.FindViewById<AppCompatButton>(Resource.Id.GetButton);
             getButton.SetBackgroundColor(Color.Transparent);
             getButton.Text = "Get";
+            //getButton.SetCommand("Click", ViewModel.RetrieveShoppingListElementsCommand);
             getButton.Click += HandleGetButtonClick;
 
             _progressBarRelativeLayout = FindViewById<RelativeLayout>(Resource.Id.ProgressBarLayout);
             _progressBarRelativeLayout.Visibility = ViewStates.Invisible;
+            //Bindings.Add(this.SetBinding(() => ViewModel.IsBusy, () => _progressBarRelativeLayout.Visibility, BindingMode.OneWay)
+            //    .ConvertSourceToTarget(b => b ? ViewStates.Visible : ViewStates.Invisible));
 
             _listView = FindViewById<ListView>(Resource.Id.ShoppingListListView);
             _listView.ItemClick += OnItemClick;
-            _listView.Adapter = ViewModel.ShoppingListElementCollection.GetAdapter(GetShoppingListElementAdapter);
+            //TODO _listView.Adapter = ViewModel.ShoppingListElementCollection.GetAdapter(GetShoppingListElementAdapter);
             RegisterForContextMenu(_listView);
 
             var floatingButton = FindViewById<FloatingActionButton>(Resource.Id.AddButton);
@@ -117,28 +120,12 @@ namespace TestsFinal.DroidNative
             switch (item.ItemId) {
                 case Resource.Id.DeleteItem:
                     var globalCalculation = _globalCalculations[menuInfo.Position];
-
-                    new AlertDialog.Builder(this)
-                        .SetTitle("Remove")
-                        .SetMessage("Do you want to remove it?")
-                        .SetPositiveButton("Ok", (o, args) => RemoveGlobalCalculation(globalCalculation))
-                        .SetNegativeButton("Cancel", (o, args) => { })
-                        .Show();
-
                     _calculationManager.RemoveGlobalCalculation(globalCalculation);
                     _globalCalculations.Remove(globalCalculation);
-                    SetGlobalCalculations();
                     return true;
             }
 
             return base.OnContextItemSelected(item);
-        }
-
-        private void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
-        {
-            _calculationManager.RemoveGlobalCalculation(globalCalculation);
-            _globalCalculations.Remove(globalCalculation);
-            SetGlobalCalculations();
         }
 
     }

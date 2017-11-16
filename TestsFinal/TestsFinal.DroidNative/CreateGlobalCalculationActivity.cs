@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Backend.Model;
 
 namespace TestsFinal.DroidNative
 {
@@ -16,23 +17,35 @@ namespace TestsFinal.DroidNative
     public class CreateGlobalCalculationActivity : Activity
     {
 
-        private EditText _descriptionEditText;
-        private EditText _creatorEditText;
+        private EditText _labelEditText;
+        private EditText _startOperandEditText;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
-            //SetContentView(Resource.);
+            SetContentView(Resource.Layout.CreateGlobalCalculation);
 
-            _descriptionEditText = FindViewById<EditText>(Resource.Id.DescriptionEditText);
-            Bindings.Add(this.SetBinding(() => ViewModel.Description, () => _descriptionEditText.Text, BindingMode.TwoWay));
+            _labelEditText = FindViewById<EditText>(Resource.Id.LabelEditText);
+            //Bindings.Add(this.SetBinding(() => ViewModel.Description, () => _descriptionEditText.Text, BindingMode.TwoWay));
 
-            _creatorEditText = FindViewById<EditText>(Resource.Id.CreatorEditText);
-            Bindings.Add(this.SetBinding(() => ViewModel.Creator, () => _creatorEditText.Text, BindingMode.TwoWay));
+            _startOperandEditText = FindViewById<EditText>(Resource.Id.StartOperandEditText);
+            //Bindings.Add(this.SetBinding(() => ViewModel.Creator, () => _creatorEditText.Text, BindingMode.TwoWay));
 
-            var saveButton = FindViewById<Button>(Resource.Id.dialogButtonSave);
-            saveButton.SetCommand("Click", ViewModel.SaveShoppingListElementCommand);
+            var saveButton = FindViewById<Button>(Resource.Id.ButtonSave);
+            saveButton.Click += HandleSave;
+            //saveButton.SetCommand("Click", ViewModel.SaveShoppingListElementCommand);
+        }
+
+        private void HandleSave(object sender, EventArgs e)
+        {
+            var newGlobalCalculation = new GlobalCalculation();
+            newGlobalCalculation.Label = _labelEditText.Text;
+
+            double startOperand = 0;
+            double.TryParse(_startOperandEditText.Text, out startOperand);
+            CustomLocator.CalculationManager.AddNewGlobalCalculation(newGlobalCalculation, startOperand);
+            Finish();
         }
     }
 }
