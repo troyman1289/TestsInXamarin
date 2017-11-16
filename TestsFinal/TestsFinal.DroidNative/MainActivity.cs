@@ -46,7 +46,7 @@ namespace TestsFinal.DroidNative
 
             _listView = FindViewById<ListView>(Resource.Id.ShoppingListListView);
             _listView.ItemClick += OnItemClick;
-            _listView.Adapter = ViewModel.ShoppingListElementCollection.GetAdapter(GetShoppingListElementAdapter);
+            _listView.Adapter = new ListViewAdapter(_globalCalculations);
             RegisterForContextMenu(_listView);
 
             var floatingButton = FindViewById<FloatingActionButton>(Resource.Id.AddButton);
@@ -141,6 +141,40 @@ namespace TestsFinal.DroidNative
             SetGlobalCalculations();
         }
 
+    }
+
+    public class ListViewAdapter : BaseAdapter<GlobalCalculation>
+    {
+        List<GlobalCalculation> _globalCalculations;
+
+        public ListViewAdapter(List<GlobalCalculation> globalCalculations)
+        {
+            _globalCalculations = globalCalculations;
+        }
+
+        public override long GetItemId(int position)
+        {
+            return position;
+        }
+
+        public override string this[int position]
+        {
+            get { return _globalCalculations[position]; }
+        }
+
+        public override int Count
+        {
+            get { return _globalCalculations.Count; }
+        }
+
+        public override View GetView(int position, View convertView, ViewGroup parent)
+        {
+            View view = convertView; // re-use an existing view, if one is available
+            if (view == null) // otherwise create a new one
+                view = context.LayoutInflater.Inflate(Android.Resource.Layout.GlobalCalculationListViewElement, null);
+            view.FindViewById<TextView>(Android.Resource.Id.Text1).Text = _globalCalculations[position].Label;
+            return view;
+        }
     }
 }
 
