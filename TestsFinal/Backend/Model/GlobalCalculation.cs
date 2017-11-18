@@ -6,16 +6,20 @@ namespace Backend.Model
 {
     public class GlobalCalculation : Base
     {
-        #region LocalCalculations
+        #region Label
 
-        private readonly ObservableCollection<LocalCalculation> _localCalculations = new ObservableCollection<LocalCalculation>();
+        private string _label;
 
-        /// <summary>
-        /// Collection of Operations
-        /// </summary>
-        public ObservableCollection<LocalCalculation> LocalCalculations
+        public string Label
         {
-            get { return _localCalculations; }
+            get { return _label; }
+            set
+            {
+                if (_label != value) {
+                    _label = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         #endregion
@@ -34,6 +38,20 @@ namespace Backend.Model
                 }
             }
         }
+        #endregion
+
+        #region LocalCalculations
+
+        private readonly ObservableCollection<LocalCalculation> _localCalculations = new ObservableCollection<LocalCalculation>();
+
+        /// <summary>
+        /// Collection of Operations
+        /// </summary>
+        public ObservableCollection<LocalCalculation> LocalCalculations
+        {
+            get { return _localCalculations; }
+        }
+
         #endregion
     }
 }

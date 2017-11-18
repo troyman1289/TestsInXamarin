@@ -40,8 +40,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreateGlobalCalculationViewModel.cs" />
     <Compile Include="GlobalCalculationViewModel.cs" />
-    <Compile Include="LocalCalculationViewModel.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

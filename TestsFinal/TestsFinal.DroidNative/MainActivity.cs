@@ -17,24 +17,27 @@ using Toolbar = Android.Widget.Toolbar;
 
 namespace TestsFinal.DroidNative
 {
-    [Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
+    //[Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
     public class MainActivity : AppCompatActivity
     {
         private RelativeLayout _progressBarRelativeLayout;
         private ListView _listView;
-        private IList<GlobalCalculation> _globalCalculations;
+        private List<GlobalCalculation> _globalCalculations;
         private ICalculationManager _calculationManager;
         private GlobalCalculation _currentGlobalCalculation;
+
+        private const int FromCreateGlobalActivityResult = 1;
+        private const int FromGlobalCalculationActivityResult = 2;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             _calculationManager = CustomLocator.CalculationManager;
-            _globalCalculations = _calculationManager.GetAllGlobalCalculations();
+            _globalCalculations = _calculationManager.GetAllGlobalCalculations().ToList();
 
             SetContentView(Resource.Layout.Main);
-            var toolbar = FindViewById<Toolbar>(Resource.Id.Toolbar);
+            var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.Toolbar);
             toolbar.InflateMenu(Resource.Menu.MainMenu);
             var getButton = toolbar.FindViewById<AppCompatButton>(Resource.Id.GetButton);
             getButton.SetBackgroundColor(Color.Transparent);
@@ -46,19 +49,17 @@ namespace TestsFinal.DroidNative
 
             _listView = FindViewById<ListView>(Resource.Id.ShoppingListListView);
             _listView.ItemClick += OnItemClick;
-            _listView.Adapter = new ListViewAdapter(_globalCalculations);
+            _listView.Adapter = new ListViewAdapter(_globalCalculations,this);
             RegisterForContextMenu(_listView);
 
             var floatingButton = FindViewById<FloatingActionButton>(Resource.Id.AddButton);
             floatingButton.Click += HandleAddButtonClick;
-            //floatingButton.SetCommand("Click", ViewModel.AddShoppingListElementCommand);
         }
 
         private void HandleAddButtonClick(object sender, EventArgs e)
         {
-            //TODO data through intent
             var intent = new Intent(this, typeof(CreateGlobalCalculationActivity));
-            StartActivity(intent);
+            StartActivityForResult(intent, FromCreateGlobalActivityResult);
         }
 
         private async void HandleGetButtonClick(object sender, EventArgs e)
@@ -87,6 +88,7 @@ namespace TestsFinal.DroidNative
             foreach (var globalCalculation in calculations) {
                 _globalCalculations.Add(globalCalculation);
             }
+            ((ListViewAdapter)_listView.Adapter).NotifyDataSetChanged();
         }
 
         private void OnItemClick(object sender, AdapterView.ItemClickEventArgs e)
@@ -95,13 +97,28 @@ namespace TestsFinal.DroidNative
             if (item == null)
                 return;
 
-            //TODO refresh on come back
             _currentGlobalCalculation = item;
 
             _calculationManager.LoadGlobalCalculation(_currentGlobalCalculation);
-            //TODO data through intent
             var intent = new Intent(this, typeof(GlobalCalculationActivity));
-            StartActivity(intent);
+            intent.PutExtra("GlobalCalculationId", item.Id);
+            StartActivityForResult(intent, FromGlobalCalculationActivityResult);
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (requestCode == FromGlobalCalculationActivityResult) {
+                if (_currentGlobalCalculation == null)
+                    return;
+                _currentGlobalCalculation = null;
+                SetGlobalCalculations();
+                return;
+            }
+
+            if (requestCode == FromCreateGlobalActivityResult) {
+                SetGlobalCalculations();
+            }
         }
 
         public override void OnCreateContextMenu(IContextMenu menu, View v, IContextMenuContextMenuInfo menuInfo)
@@ -138,18 +155,20 @@ namespace TestsFinal.DroidNative
         {
             _calculationManager.RemoveGlobalCalculation(globalCalculation);
             _globalCalculations.Remove(globalCalculation);
-            SetGlobalCalculations();
+            ((ListViewAdapter)_listView.Adapter).NotifyDataSetChanged();
         }
 
     }
 
     public class ListViewAdapter : BaseAdapter<GlobalCalculation>
     {
-        List<GlobalCalculation> _globalCalculations;
+        private List<GlobalCalculation> _globalCalculations;
+        private Activity _contextActivity;
 
-        public ListViewAdapter(List<GlobalCalculation> globalCalculations)
+        public ListViewAdapter(List<GlobalCalculation> globalCalculations, Activity contextActivity)
         {
             _globalCalculations = globalCalculations;
+            _contextActivity = contextActivity;
         }
 
         public override long GetItemId(int position)
@@ -157,7 +176,7 @@ namespace TestsFinal.DroidNative
             return position;
         }
 
-        public override string this[int position]
+        public override GlobalCalculation this[int position]
         {
             get { return _globalCalculations[position]; }
         }
@@ -171,8 +190,9 @@ namespace TestsFinal.DroidNative
         {
             View view = convertView; // re-use an existing view, if one is available
             if (view == null) // otherwise create a new one
-                view = context.LayoutInflater.Inflate(Android.Resource.Layout.GlobalCalculationListViewElement, null);
-            view.FindViewById<TextView>(Android.Resource.Id.Text1).Text = _globalCalculations[position].Label;
+                view = _contextActivity.LayoutInflater.Inflate(Resource.Layout.GlobalCalculationListViewElement, null);
+            view.FindViewById<TextView>(Resource.Id.LabelTextView).Text = _globalCalculations[position].Label;
+            view.FindViewById<TextView>(Resource.Id.ResultTextView).Text = _globalCalculations[position].Result.ToString("N2");
             return view;
         }
     }

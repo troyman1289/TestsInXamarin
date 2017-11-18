@@ -3,14 +3,97 @@
     x:Class="TestsFinal.GlobalCalculationPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    BindingContext="{Binding Source={StaticResource Locator}, Path=GlobalCalculationViewModel}">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding SaveCalculationCommand}" Text="Save" />
-    </ContentPage.ToolbarItems>
-    <StackLayout>
-        <Label Text="Name" />
-        <Entry Text="{Binding GlobalCalculation.Label}" />
-        <Label Text="Start Operand" />
-        <Entry Text="{Binding StartOperand}" />
-    </StackLayout>
+    xmlns:model="clr-namespace:Backend.Model;assembly=Backend"
+    xmlns:testsFinal="clr-namespace:TestsFinal;assembly=TestsFinal"
+    BindingContext="{Binding Source={StaticResource Locator}, Path=LocalCalculationViewModel}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <testsFinal:SingleClickListView Grid.Row="0" ItemsSource="{Binding GlobalCalculation.LocalCalculations}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem
+                                Command="{Binding Source={StaticResource Locator}, Path=LocalCalculationViewModel.RemoveLocalCalculationCommand}"
+                                CommandParameter="{Binding}"
+                                Text="Remove" />
+                        </ViewCell.ContextActions>
+                        <Grid Margin="10,0,10,0" VerticalOptions="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="{Binding OperationString, Mode=OneWay}" />
+                            <Label Grid.Column="1" Text="{Binding Result}" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </testsFinal:SingleClickListView>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Picker
+                Grid.Column="0"
+                HorizontalOptions="Center"
+                ItemDisplayBinding="{Binding Label}"
+                ItemsSource="{Binding Operators}"
+                SelectedItem="{Binding SelectedOperator}"
+                WidthRequest="50" />
+            <Entry Grid.Column="1" Text="{Binding NewOperation.Operand}" />
+            <Button
+                Grid.Column="2"
+                BackgroundColor="DodgerBlue"
+                Command="{Binding AddBracketCommand}"
+                CommandParameter="{x:Static model:BracketType.Open}"
+                IsEnabled="{Binding CanUseOpenBracket}"
+                Text="(">
+                <Button.Triggers>
+                    <DataTrigger
+                        Binding="{Binding NewOperation.BracketType}"
+                        TargetType="Button"
+                        Value="{x:Static model:BracketType.Open}">
+                        <Setter Property="Button.BackgroundColor" Value="GreenYellow" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button
+                Grid.Column="3"
+                BackgroundColor="DodgerBlue"
+                Command="{Binding AddBracketCommand}"
+                CommandParameter="{x:Static model:BracketType.Close}"
+                IsEnabled="{Binding CanUseCloseBracket}"
+                Text=")">
+                <Button.Triggers>
+                    <DataTrigger
+                        Binding="{Binding NewOperation.BracketType}"
+                        TargetType="Button"
+                        Value="{x:Static model:BracketType.Close}">
+                        <Setter Property="Button.BackgroundColor" Value="GreenYellow" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button
+                Grid.Column="4"
+                BackgroundColor="DodgerBlue"
+                Command="{Binding AddOperationCommand}"
+                Text="Add" />
+        </Grid>
+        <Button
+            Grid.Row="2"
+            Margin="0,20,0,0"
+            BackgroundColor="GreenYellow"
+            Command="{Binding AddLocalCalculationCommand}"
+            Text="{Binding CurrentLocalCalculation.Result}" />
+    </Grid>
 </ContentPage>

@@ -38,11 +38,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CreateGlobalCalculationPage.xaml.cs">
+      <DependentUpon>CreateGlobalCalculationPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GlobalCalculationPage.xaml.cs">
       <DependentUpon>GlobalCalculationPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LocalCalculationPage.xaml.cs">
-      <DependentUpon>LocalCalculationPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Locator.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -97,13 +97,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="GlobalCalculationPage.xaml">
+    <EmbeddedResource Include="CreateGlobalCalculationPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LocalCalculationPage.xaml">
+    <EmbeddedResource Include="GlobalCalculationPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

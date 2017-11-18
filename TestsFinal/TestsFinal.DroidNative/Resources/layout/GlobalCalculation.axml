@@ -1,73 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-     xmlns:android="http://schemas.android.com/apk/res/android"
-     xmlns:app="http://schemas.android.com/apk/res-auto"
-     android:orientation="vertical"
-     android:layout_width="match_parent"
-     android:layout_height="match_parent"
-      
-    >
-	<android.support.design.widget.AppBarLayout
-	  android:layout_width="match_parent"
-	  android:layout_height="wrap_content"
-	  android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-		<android.support.v7.widget.Toolbar
-		  android:id="@+id/Toolbar"
-		  android:layout_width="match_parent"
-		  android:layout_height="?attr/actionBarSize"
-		  android:background="?attr/colorPrimary"
-		  android:elevation="4dp"
-		  android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-		  app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-		</android.support.v7.widget.Toolbar>
-	</android.support.design.widget.AppBarLayout>
-
-	<ListView
-	  android:id="@+id/LocalCalculationsListView"
-	  android:layout_width="match_parent"
-	  android:layout_height="match_parent"
-	  app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	              android:orientation="horizotnal"
-	              android:layout_width="match_parent"
-	              android:layout_height="wrap_content"
-	>
-
-		<!--<Picker
-			android:id="@+id/PiEditText"
-			android:layout_margin="10dp"
-			android:layout_marginBottom="20dp"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" />-->
-		<EditText
-			android:id="@+id/OperandEditText"
-			android:layout_margin="10dp"
-			android:layout_marginBottom="20dp"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" />
-		<Button
-			android:id="@+id/AddOpenBracketButton"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:Text="("/>
-		<Button
-			android:id="@+id/AddCloseBracketButton"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:Text=")"/>
-		<Button
-			android:id="@+id/AddoperationButton"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:Text="Add"/>
-
-	</LinearLayout>
-
-	<Button 
-		android:id="@+id/AddLocalCalculationButton"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"/>
-
-
-</android.support.design.widget.CoordinatorLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <ListView
+        android:id="@+id/LocalCalculationsListView"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="1px" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <Spinner
+            android:id="@+id/OperatorSpinner"
+            android:layout_weight="1"
+            android:layout_width="0px"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/OperandEditText"
+            android:layout_weight="1"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:inputType="numberDecimal" />
+        <Button
+            android:id="@+id/AddOpenBracketButton"
+            android:layout_weight="1"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:text="(" />
+        <Button
+            android:id="@+id/AddCloseBracketButton"
+            android:layout_weight="1"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:text=")" />
+        <Button
+            android:id="@+id/AddoperationButton"
+            android:layout_weight="1"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:text="Add" />
+    </LinearLayout>
+    <Button
+        android:id="@+id/AddLocalCalculationButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

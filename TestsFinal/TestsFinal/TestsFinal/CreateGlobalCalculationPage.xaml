@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TestsFinal.CreateGlobalCalculationPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BindingContext="{Binding Source={StaticResource Locator}, Path=GlobalCalculationViewModel}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding SaveCalculationCommand}" Text="Save" />
+    </ContentPage.ToolbarItems>
+    <StackLayout>
+        <Label Text="Name" />
+        <Entry Text="{Binding GlobalCalculation.Label}" />
+        <Label Text="Start Operand" />
+        <Entry Text="{Binding StartOperand}" />
+    </StackLayout>
+</ContentPage>

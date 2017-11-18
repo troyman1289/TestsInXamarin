@@ -13,7 +13,7 @@ using Backend.Model;
 
 namespace TestsFinal.DroidNative
 {
-    [Activity(Label = "CreateGlobalCalculationActivity")]
+    [Activity(Label = "CreateGlobalCalculationActivity", Theme = "@style/MainTheme")]
     public class CreateGlobalCalculationActivity : Activity
     {
 
@@ -42,8 +42,8 @@ namespace TestsFinal.DroidNative
             var newGlobalCalculation = new GlobalCalculation();
             newGlobalCalculation.Label = _labelEditText.Text;
 
-            double startOperand = 0;
-            double.TryParse(_startOperandEditText.Text, out startOperand);
+            decimal startOperand = 0;
+            decimal.TryParse(_startOperandEditText.Text, out startOperand);
             CustomLocator.CalculationManager.AddNewGlobalCalculation(newGlobalCalculation, startOperand);
             Finish();
         }

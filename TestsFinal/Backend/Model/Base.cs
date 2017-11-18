@@ -29,24 +29,6 @@ namespace Backend.Model
 
         #endregion
 
-        #region Label
-
-        private string _label;
-
-        public string Label
-        {
-            get { return _label; }
-            set
-            {
-                if (_label != value) {
-                    _label = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        #endregion
-
         #region Order
 
         private int _order;

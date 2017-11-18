@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Android.App;
 using Backend.Business;
 using Backend.DataAccess;
 using Backend.Interfaces;
@@ -11,16 +7,16 @@ using Backend.Utils;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using ViewModels;
-using Xamarin.Forms;
+using INavigationService = Backend.Interfaces.INavigationService;
 
-namespace TestsFinal
+namespace TestsFinal.DroidNative.MVVM
 {
     public class Locator
     {
-        static Locator()
+        public static void Init()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-            var connectionService = DependencyService.Get<ISqliteConnectionService>();
+            var connectionService = new Sqlite();
             var navigationService = new NavigationService();
 
             SimpleIoc.Default.Register<INavigationService>(() => navigationService);
@@ -33,13 +29,13 @@ namespace TestsFinal
             SimpleIoc.Default.Register<CreateGlobalCalculationViewModel, CreateGlobalCalculationViewModel>();
             SimpleIoc.Default.Register<GlobalCalculationViewModel, GlobalCalculationViewModel>();
 
-            RegisterViewModelWithView<MainViewModel, MainPage>(navigationService);
-            RegisterViewModelWithView<CreateGlobalCalculationViewModel, CreateGlobalCalculationPage>(navigationService);
-            RegisterViewModelWithView<GlobalCalculationViewModel, GlobalCalculationPage>(navigationService);
+            RegisterViewModelWithView<MainViewModel, MainActivityWithMVVM>(navigationService);
+            RegisterViewModelWithView<CreateGlobalCalculationViewModel, CreateGlobalCalculationActivityMVVM>(navigationService);
+            RegisterViewModelWithView<GlobalCalculationViewModel, GlobalCalculationActivityMVVM>(navigationService);
 
         }
 
-        private static void RegisterViewModelWithView<T, TK>(NavigationService navigationService) where T : NotifyingObject where TK : Page
+        private static void RegisterViewModelWithView<T, TK>(NavigationService navigationService) where T : NotifyingObject where TK : Activity
         {
             navigationService.Configure(typeof(T).ToString(), typeof(TK));
             SimpleIoc.Default.Register<T>();

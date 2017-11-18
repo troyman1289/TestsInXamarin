@@ -10,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace TestsFinal
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class LocalCalculationPage : ContentPage
+    public partial class CreateGlobalCalculationPage : ContentPage
     {
-        public LocalCalculationPage()
+        public CreateGlobalCalculationPage()
         {
             InitializeComponent();
         }

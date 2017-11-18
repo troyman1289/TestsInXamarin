@@ -1,25 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Backend.Interfaces;
+using Microsoft.Practices.ServiceLocation;
 
-namespace TestsFinal.DroidNative
+namespace TestsFinal.DroidNative.MVVM
 {
     public class PopUpService : IPopUpService
     {
-        public Context Context { get; set; }
-
         public void ShowOkCancelPopUp(string title, string message, Action<bool> resultAction)
         {
-            new AlertDialog.Builder(Context)
+            var context = ((NavigationService) ServiceLocator.Current.GetInstance<INavigationService>())
+                .CurrentActivity;
+            new AlertDialog.Builder(context)
                 .SetTitle(title)
                 .SetMessage(message)
                 .SetPositiveButton(

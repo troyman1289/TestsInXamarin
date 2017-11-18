@@ -18,13 +18,13 @@ namespace ViewModels
         private readonly ICalculationManager _calculationManager;
         private readonly INavigationService _navigationService;
         private readonly IPopUpService _popUpService;
-        private readonly LocalCalculationViewModel _calculationViewModel;
+        private readonly GlobalCalculationViewModel _calculationViewModel;
 
         public MainViewModel(
             ICalculationManager calculationManager,
             INavigationService navigationService,
             IPopUpService popUpService,
-            LocalCalculationViewModel calculationViewModel)
+            GlobalCalculationViewModel calculationViewModel)
         {
             _calculationManager = calculationManager;
             _navigationService = navigationService;
@@ -124,7 +124,7 @@ namespace ViewModels
         {
             _calculationManager.LoadGlobalCalculation(globalCalculation);
             _calculationViewModel.GlobalCalculation = globalCalculation;
-            _navigationService.PushView(typeof(LocalCalculationViewModel).ToString());
+            _navigationService.PushView(typeof(GlobalCalculationViewModel).ToString());
         }
 
         #endregion
@@ -147,7 +147,7 @@ namespace ViewModels
 
         private void HandleAddNewCalculation()
         {
-            _navigationService.PushView(typeof(GlobalCalculationViewModel).ToString());
+            _navigationService.PushView(typeof(CreateGlobalCalculationViewModel).ToString());
         }
 
         #endregion
