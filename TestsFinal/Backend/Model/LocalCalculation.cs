@@ -6,29 +6,6 @@ namespace Backend.Model
     public class LocalCalculation : Base
     {
 
-        #region Operations
-
-        private readonly ObservableCollection<Operation> _operations = new ObservableCollection<Operation>();
-
-        /// <summary>
-        /// Collection of Operations
-        /// </summary>
-        public ObservableCollection<Operation> Operations
-        {
-            get { return _operations; }
-        }
-
-        #endregion
-
-        #region ParentGlobalCalculation
-
-        public int ParentGlobalCalculationId { get; set; }
-
-        [Ignore]
-        public GlobalCalculation ParentGlobalCalculation { get; set; }
-
-        #endregion
-
         #region StartOperand
 
         private decimal _startOperand;
@@ -80,6 +57,29 @@ namespace Backend.Model
                     OnPropertyChanged();
                 }
             }
+        }
+
+        #endregion
+
+        #region ParentGlobalCalculation
+
+        public int ParentGlobalCalculationId { get; set; }
+
+        [Ignore]
+        public GlobalCalculation ParentGlobalCalculation { get; set; }
+
+        #endregion
+
+        #region Operations
+
+        private readonly ObservableCollection<Operation> _operations = new ObservableCollection<Operation>();
+
+        /// <summary>
+        /// Collection of Operations
+        /// </summary>
+        public ObservableCollection<Operation> Operations
+        {
+            get { return _operations; }
         }
 
         #endregion

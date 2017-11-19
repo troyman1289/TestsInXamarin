@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Backend.Interfaces;
 using Backend.Model;
@@ -12,6 +11,10 @@ namespace Backend.RestService
 {
     public class RestService : IRestService
     {
+        /// <summary>
+        /// Fetching data from firebase
+        /// </summary>
+        /// <returns></returns>
         public async Task<IList<GlobalCalculation>> FetchGlobalCalculations()
         {
             var client = new HttpClient();

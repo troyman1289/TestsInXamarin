@@ -57,6 +57,7 @@
     <Compile Include="Model\Operator\Operators.cs" />
     <Compile Include="Model\Operator\Substraction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RestService\DummyRestService.cs" />
     <Compile Include="RestService\RestService.cs" />
     <Compile Include="Utils\NotifyingObject.cs" />
   </ItemGroup>

@@ -33,7 +33,6 @@ namespace ViewModels
             SetGlobalCalculations();
         }
 
-
         #region IsBusy
 
         private bool _isBusy = false;

@@ -5,40 +5,6 @@ namespace Backend.Model
 {
     public class Operation : Base
     {
-        #region Operator
-
-        private OperatorType _operatorType;
-
-        public OperatorType OperatorType
-        {
-            get { return _operatorType; }
-            set
-            {
-                if (_operatorType != value) {
-                    _operatorType = value;
-                    OnPropertyChanged();
-                }
-                AssignOperator();
-            }
-        }
-
-        private Operator.Operator _operator;
-
-        [Ignore]
-        public Operator.Operator Operator
-        {
-            get { return _operator; }
-            private set
-            {
-                if (_operator != value) {
-                    _operator = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        #endregion
-
         #region BracketType
 
         /// <summary>
@@ -78,7 +44,7 @@ namespace Backend.Model
 
         #endregion
 
-        #region LocalCalculation
+        #region ParentLocalCalculation
 
         public int ParentLocalCalculationId { get; set; }
 
@@ -87,10 +53,41 @@ namespace Backend.Model
 
         #endregion
 
+        #region Operator
+
+        private OperatorType _operatorType;
+
+        public OperatorType OperatorType
+        {
+            get { return _operatorType; }
+            set
+            {
+                if (_operatorType != value) {
+                    _operatorType = value;
+                    OnPropertyChanged();
+                }
+                AssignOperator();
+            }
+        }
+
+        private Operator.Operator _operator;
+
+        [Ignore]
+        public Operator.Operator Operator
+        {
+            get { return _operator; }
+            private set
+            {
+                if (_operator != value) {
+                    _operator = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public void AssignOperator()
         {
-            switch (OperatorType)
-            {
+            switch (OperatorType) {
                 case OperatorType.Addition:
                     Operator = Operators.Addition;
                     break;
@@ -105,5 +102,8 @@ namespace Backend.Model
                     break;
             }
         }
+
+        #endregion
+
     }
 }

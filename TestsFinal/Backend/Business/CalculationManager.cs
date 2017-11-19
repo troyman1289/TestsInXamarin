@@ -53,7 +53,7 @@ namespace Backend.Business
                 return;
             }
 
-            //load local calculations
+            //load local calculations and remove them with their operations
             var localCalculations = _dataAccess.GetLocalCalculations(globalCalculation.Id);
             foreach (var localCalculation in localCalculations) {
                 globalCalculation.LocalCalculations.Add(localCalculation);
@@ -73,7 +73,7 @@ namespace Backend.Business
 
             if(!withRefresh) return;
 
-            //calculate new from this position
+            //calculate new from this position and refresh the order
             var toRefresh = globalCalculation.LocalCalculations.Where(lc => lc.Order > orderToRemove).ToList();
             foreach (var calculation in toRefresh) {
                 calculation.Order = orderToRemove;
@@ -105,7 +105,6 @@ namespace Backend.Business
 
         public void AddNewGlobalCalculation(GlobalCalculation globalCalculation, decimal startOperand)
         {
-
             var allGlobalCalculations = GetAllGlobalCalculations().ToList();
             var newOrder = allGlobalCalculations.Any()
                 ? allGlobalCalculations.Max(g => g.Order) + 1
@@ -122,17 +121,6 @@ namespace Backend.Business
             localCalculation.ParentGlobalCalculation = globalCalculation;
             globalCalculation.LocalCalculations.Add(localCalculation);
             _dataAccess.Insert(localCalculation);
-            
-            //create first operation
-            //var operation = new Operation();
-            //operation.BracketType = BracketType.None;
-            //operation.Operand = startOperand;
-            //operation.OperatorType = OperatorType.Addition;
-            //operation.ParentLocalCalculationId = localCalculation.Id;
-            //operation.ParentLocalCalculation = localCalculation;
-            //operation.Order = 1;
-            //localCalculation.Operations.Add(operation);
-            //_dataAccess.Insert(operation);
         }
 
         public void AddOperation(LocalCalculation localCalculation,Operation operation)
@@ -200,47 +188,47 @@ namespace Backend.Business
             //Rules:
             //- from left to right
             //- brackets first
-            //- multiplication and division first, then addition and subtraction
+            //- multiplication and division first, then addition and subtraction = Weight of operators
             //...
 
-            //search for bracketes and calculate them
-            var orderedoperations = localCalculation.Operations.OrderBy(o => o.Order).ToList();
-            while (orderedoperations.Any(o => o.BracketType == BracketType.Open))
+            //search for bracketes and calculate them at first
+            var orderedOperations = localCalculation.Operations.OrderBy(o => o.Order).ToList();
+            while (orderedOperations.Any(o => o.BracketType == BracketType.Open))
             {
-                var openOperation = orderedoperations.First(o => o.BracketType == BracketType.Open);
-                var closeOperation = orderedoperations.FirstOrDefault(o => o.Order >= openOperation.Order && o.BracketType == BracketType.Close);
+                var openOperation = orderedOperations.First(o => o.BracketType == BracketType.Open);
+                var closeOperation = orderedOperations.FirstOrDefault(o => o.Order >= openOperation.Order && o.BracketType == BracketType.Close);
                 if (closeOperation == null) {
                     //take the end
-                    closeOperation = orderedoperations.Last();
+                    closeOperation = orderedOperations.Last();
                 }
 
-                var toSummarize = orderedoperations
+                var toSummarize = orderedOperations
                     .Where(o => o.Order >= openOperation.Order && o.Order <= closeOperation.Order)
                     .ToList();
 
                 var summarizedOperation = Summarize(toSummarize);
                 summarizedOperation.BracketType = BracketType.None;
-                orderedoperations = orderedoperations.Except(toSummarize).ToList();
-                orderedoperations.Add(summarizedOperation);
-                orderedoperations = orderedoperations.OrderBy(o => o.Order).ToList();
+                orderedOperations = orderedOperations.Except(toSummarize).ToList();
+                orderedOperations.Add(summarizedOperation);
+                orderedOperations = orderedOperations.OrderBy(o => o.Order).ToList();
             }
 
             //Operation with start operand
             var startOperation = new Operation {Order = 0, Operand = localCalculation.StartOperand};
-            orderedoperations.Add(startOperation);
+            orderedOperations.Add(startOperation);
 
-            var endOperation = Summarize(orderedoperations);
+            //Calculate all operations and summarize them
+            var endOperation = Summarize(orderedOperations);
             localCalculation.Result = Math.Round(endOperation.Operand, 2);
             _dataAccess.Update(localCalculation);
         }
 
         private Operation Summarize(IList<Operation> operations)
         {
-            //if(operations.Any())
             var orderedOperations = operations.OrderBy(o => o.Order).ToList();
             var startOrder = orderedOperations.First().Order;
             
-            //search for operations
+            //search for remaining operations
             while (orderedOperations.Count >= 2)
             {
                 var operationsToCheck = orderedOperations
@@ -274,6 +262,12 @@ namespace Backend.Business
             };
         }
 
+        /// <summary>
+        /// Here we perform the real calculation
+        /// </summary>
+        /// <param name="operation1"></param>
+        /// <param name="operation2"></param>
+        /// <returns></returns>
         private Operation Summarize(Operation operation1, Operation operation2)
         {
             var summarizedOperation = new Operation();
