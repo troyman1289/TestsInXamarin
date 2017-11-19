@@ -302,7 +302,7 @@ namespace ViewModels
                                 || (lastOperationWithCloseBracket != null
                                     && lastOperationWithOpenBracket.Order < lastOperationWithCloseBracket.Order);
             CanUseCloseBracket = lastOperationWithOpenBracket != null
-                                 && (lastOperationWithCloseBracket == null || lastOperationWithCloseBracket.Order > lastOperationWithOpenBracket.Order);
+                                 && (lastOperationWithCloseBracket == null || lastOperationWithCloseBracket.Order < lastOperationWithOpenBracket.Order);
         }
 
     }
