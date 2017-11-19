@@ -46,5 +46,9 @@ namespace Backend.Model
         }
 
         #endregion
+
+        #region Power
+
+        #endregion
     }
 }
