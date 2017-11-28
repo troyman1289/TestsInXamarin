@@ -189,43 +189,44 @@ namespace ViewModels
 
         #region RemoveGlobalCalculationCommand
 
-        private ICommand _removeGlobalCalculationCommand;
+        //TODO
+        //private ICommand _removeGlobalCalculationCommand;
 
-        public ICommand RemoveGlobalCalculationCommand
-        {
-            get
-            {
-                if (_removeGlobalCalculationCommand == null)
-                {
-                    _removeGlobalCalculationCommand =
-                        new RelayCommand<GlobalCalculation>(HandleRemoveGlobalCalculation);
-                }
-                return _removeGlobalCalculationCommand;
-            }
-        }
+        //public ICommand RemoveGlobalCalculationCommand
+        //{
+        //    get
+        //    {
+        //        if (_removeGlobalCalculationCommand == null)
+        //        {
+        //            _removeGlobalCalculationCommand =
+        //                new RelayCommand<GlobalCalculation>(HandleRemoveGlobalCalculation);
+        //        }
+        //        return _removeGlobalCalculationCommand;
+        //    }
+        //}
 
-        private void HandleRemoveGlobalCalculation(GlobalCalculation globalCalculation)
-        {
-            _popUpService.ShowOkCancelPopUp("Remove", "Do you want to remove it?", result => {
-                if (result) {
-                    RemoveGlobalCalculation(globalCalculation);
-                }
-            });
-        }
+        //private void HandleRemoveGlobalCalculation(GlobalCalculation globalCalculation)
+        //{
+        //    _popUpService.ShowOkCancelPopUp("Remove", "Do you want to remove it?", result => {
+        //        if (result) {
+        //            RemoveGlobalCalculation(globalCalculation);
+        //        }
+        //    });
+        //}
 
-        private void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
-        {
-            _calculationManager.RemoveGlobalCalculation(globalCalculation);
-            GlobalCalculations.Remove(globalCalculation);
-        }
+        //private void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
+        //{
+        //    _calculationManager.RemoveGlobalCalculation(globalCalculation);
+        //    GlobalCalculations.Remove(globalCalculation);
+        //}
 
-        private void RemoveGlobalCalculationWithLocator(GlobalCalculation globalCalculation)
-        {
-            //_calculationManager.RemoveGlobalCalculation(globalCalculation);
-            var manager = ServiceLocator.Current.GetInstance<ICalculationManager>();
-            manager.RemoveGlobalCalculation(globalCalculation);
-            GlobalCalculations.Remove(globalCalculation);
-        }
+        //private void RemoveGlobalCalculationWithLocator(GlobalCalculation globalCalculation)
+        //{
+        //    //_calculationManager.RemoveGlobalCalculation(globalCalculation);
+        //    var manager = ServiceLocator.Current.GetInstance<ICalculationManager>();
+        //    manager.RemoveGlobalCalculation(globalCalculation);
+        //    GlobalCalculations.Remove(globalCalculation);
+        //}
 
         #endregion
     }

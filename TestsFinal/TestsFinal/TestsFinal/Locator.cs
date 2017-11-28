@@ -19,16 +19,18 @@ namespace TestsFinal
     {
         static Locator()
         {
+
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             var connectionService = DependencyService.Get<ISqliteConnectionService>();
             var navigationService = new NavigationService();
+
+            DataAccess.Init(connectionService);
 
             SimpleIoc.Default.Register<INavigationService>(() => navigationService);
             SimpleIoc.Default.Register<ISqliteConnectionService>(() => connectionService);
             SimpleIoc.Default.Register<IPopUpService, PopUpService>();
 
             SimpleIoc.Default.Register<IRestService, RestService>();
-            SimpleIoc.Default.Register<IDataAccess,DataAccess>();
             SimpleIoc.Default.Register<ICalculationManager,CalculationManager>();
             SimpleIoc.Default.Register<CreateGlobalCalculationViewModel, CreateGlobalCalculationViewModel>();
             SimpleIoc.Default.Register<GlobalCalculationViewModel, GlobalCalculationViewModel>();

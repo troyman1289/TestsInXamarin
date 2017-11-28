@@ -51,11 +51,9 @@
     <Compile Include="Model\Operation.cs" />
     <Compile Include="Model\OperatorType.cs" />
     <Compile Include="Model\Operator\Addition.cs" />
-    <Compile Include="Model\Operator\Division.cs" />
     <Compile Include="Model\Operator\Multiplication.cs" />
     <Compile Include="Model\Operator\Operator.cs" />
     <Compile Include="Model\Operator\Operators.cs" />
-    <Compile Include="Model\Operator\Substraction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestService\DummyRestService.cs" />
     <Compile Include="RestService\RestService.cs" />

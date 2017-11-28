@@ -10,9 +10,10 @@ namespace Backend.Interfaces
     public interface ICalculationManager
     {
         IList<GlobalCalculation> GetAllGlobalCalculations();
-        void RemoveLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation, bool withRefresh);
+        //TODO void RemoveLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation, bool withRefresh);
+        //TODO void RemoveLocalCalculationWithRefresh(GlobalCalculation globalCalculation, LocalCalculation localCalculation);
         void AddNewGlobalCalculation(GlobalCalculation globalCalculation, decimal startOperand);
-        void RemoveGlobalCalculation(GlobalCalculation globalCalculation);
+        //TODO void RemoveGlobalCalculation(GlobalCalculation globalCalculation);
         void SetOperationString(LocalCalculation localCalculation);
         void LoadGlobalCalculation(GlobalCalculation globalCalculation);
         void AddOperation(LocalCalculation localCalculation,Operation operation);

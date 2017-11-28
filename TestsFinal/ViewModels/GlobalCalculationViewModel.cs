@@ -238,8 +238,7 @@ namespace ViewModels
 
         private void HandleRemoveLocalCalculation(LocalCalculation localCalculation)
         {
-            _calculationManager.RemoveLocalCalculation(GlobalCalculation,localCalculation, true);
-            CurrentLocalCalculation = GlobalCalculation.LocalCalculations.OrderBy(lc => lc.Order).Last();
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -302,7 +301,7 @@ namespace ViewModels
                                 || (lastOperationWithCloseBracket != null
                                     && lastOperationWithOpenBracket.Order < lastOperationWithCloseBracket.Order);
             CanUseCloseBracket = lastOperationWithOpenBracket != null
-                                 && (lastOperationWithCloseBracket == null || lastOperationWithCloseBracket.Order < lastOperationWithOpenBracket.Order);
+                                 && (lastOperationWithCloseBracket == null || lastOperationWithCloseBracket.Order > lastOperationWithOpenBracket.Order);
         }
 
     }

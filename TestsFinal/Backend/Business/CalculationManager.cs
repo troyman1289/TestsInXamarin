@@ -14,12 +14,10 @@ namespace Backend.Business
         private readonly IDataAccess _dataAccess;
         private readonly IRestService _restService;
 
-        public CalculationManager(
-            IDataAccess dataAccess,
-            IRestService restService)
+        public CalculationManager()
         {
-            _dataAccess = dataAccess;
-            _restService = restService;
+            _dataAccess = DataAccess.DataAccess.GetInstance();
+            _restService = new RestService.RestService();
         }
 
         public async Task FetchGlobalCalculationsFromServiceAsync()
@@ -64,27 +62,28 @@ namespace Backend.Business
             }
         }
 
-        public void RemoveLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation, bool withRefresh)
-        {
-            _dataAccess.Remove(localCalculation.Operations);
-            _dataAccess.Remove(localCalculation);
-            var orderToRemove = localCalculation.Order;
-            globalCalculation.LocalCalculations.Remove(localCalculation);
+        //TODO
+        //public void RemoveLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation, bool withRefresh)
+        //{
+        //    _dataAccess.Remove(localCalculation.Operations);
+        //    _dataAccess.Remove(localCalculation);
+        //    var orderToRemove = localCalculation.Order;
+        //    globalCalculation.LocalCalculations.Remove(localCalculation);
 
-            if(!withRefresh) return;
+        //    if(!withRefresh) return;
 
-            //calculate new from this position and refresh the order
-            var toRefresh = globalCalculation.LocalCalculations.Where(lc => lc.Order > orderToRemove).ToList();
-            foreach (var calculation in toRefresh) {
-                calculation.Order = orderToRemove;
-                var startOprand = globalCalculation.LocalCalculations.First(lc => lc.Order == orderToRemove - 1).Result;
-                calculation.StartOperand = startOprand;
-                SetResult(calculation);
-                SetOperationString(localCalculation);
-                orderToRemove++;
-            }
-            RefreshGlobalResult(globalCalculation);
-        }
+        //    //calculate new from this position and refresh the order
+        //    var toRefresh = globalCalculation.LocalCalculations.Where(lc => lc.Order > orderToRemove).ToList();
+        //    foreach (var calculation in toRefresh) {
+        //        calculation.Order = orderToRemove;
+        //        var startOprand = globalCalculation.LocalCalculations.First(lc => lc.Order == orderToRemove - 1).Result;
+        //        calculation.StartOperand = startOprand;
+        //        SetResult(calculation);
+        //        SetOperationString(localCalculation);
+        //        orderToRemove++;
+        //    }
+        //    RefreshGlobalResult(globalCalculation);
+        //}
 
         public void RefreshGlobalResult(GlobalCalculation globalCalculation)
         {
@@ -94,14 +93,15 @@ namespace Backend.Business
             _dataAccess.Update(globalCalculation);
         }
 
-        public void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
-        {
-            var toRemove = globalCalculation.LocalCalculations.ToList();
-            foreach (var localCalculation in toRemove) {
-                RemoveLocalCalculation(globalCalculation, localCalculation, false);
-            }
-            _dataAccess.Remove(globalCalculation);
-        }
+        //TODO
+        //public void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
+        //{
+        //    var toRemove = globalCalculation.LocalCalculations.ToList();
+        //    foreach (var localCalculation in toRemove) {
+        //        RemoveLocalCalculation(globalCalculation, localCalculation, false);
+        //    }
+        //    _dataAccess.Remove(globalCalculation);
+        //}
 
         public void AddNewGlobalCalculation(GlobalCalculation globalCalculation, decimal startOperand)
         {
@@ -115,7 +115,7 @@ namespace Backend.Business
 
             //create first local calculation
             var localCalculation = new LocalCalculation();
-            localCalculation.Order = 1;
+            localCalculation.Order = 0;
             localCalculation.StartOperand = startOperand;
             localCalculation.ParentGlobalCalculationId = globalCalculation.Id;
             localCalculation.ParentGlobalCalculation = globalCalculation;
@@ -272,7 +272,7 @@ namespace Backend.Business
         {
             var summarizedOperation = new Operation();
             summarizedOperation.OperatorType = operation1.OperatorType;
-            summarizedOperation.Operand = operation2.Operator.Calculate(operation1.Operand, operation2.Operand);
+            summarizedOperation.Operand = operation2.Operator.Calculate((int)operation1.Operand, (int)operation2.Operand);
             summarizedOperation.Order = operation1.Order;
             return summarizedOperation;
         }

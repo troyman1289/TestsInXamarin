@@ -6,7 +6,7 @@
 
         public string Label { get; protected set; }
 
-        public abstract decimal Calculate(decimal operand1, decimal operand2);
+        public abstract decimal Calculate(int operand1, int operand2);
 
         public abstract int Weight { get; }
     }

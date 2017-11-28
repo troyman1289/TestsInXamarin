@@ -8,7 +8,7 @@ namespace Backend.Model.Operator
             OperatorType = OperatorType.Addition;
         }
 
-        public override decimal Calculate(decimal operand1, decimal operand2)
+        public override decimal Calculate(int operand1, int operand2)
         {
             return operand1 + operand2;
         }
