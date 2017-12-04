@@ -8,7 +8,7 @@
         <ToolbarItem Command="{Binding SaveCalculationCommand}" Text="Save" />
     </ContentPage.ToolbarItems>
     <StackLayout>
-        <Label Text="Name" />
+        <Label Text="Label" />
         <Entry Text="{Binding GlobalCalculation.Label}" />
         <Label Text="Start Operand" />
         <Entry Text="{Binding StartOperand}" />

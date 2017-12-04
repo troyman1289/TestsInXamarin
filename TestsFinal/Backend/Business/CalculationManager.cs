@@ -62,29 +62,6 @@ namespace Backend.Business
             }
         }
 
-        //TODO
-        //public void RemoveLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation, bool withRefresh)
-        //{
-        //    _dataAccess.Remove(localCalculation.Operations);
-        //    _dataAccess.Remove(localCalculation);
-        //    var orderToRemove = localCalculation.Order;
-        //    globalCalculation.LocalCalculations.Remove(localCalculation);
-
-        //    if(!withRefresh) return;
-
-        //    //calculate new from this position and refresh the order
-        //    var toRefresh = globalCalculation.LocalCalculations.Where(lc => lc.Order > orderToRemove).ToList();
-        //    foreach (var calculation in toRefresh) {
-        //        calculation.Order = orderToRemove;
-        //        var startOprand = globalCalculation.LocalCalculations.First(lc => lc.Order == orderToRemove - 1).Result;
-        //        calculation.StartOperand = startOprand;
-        //        SetResult(calculation);
-        //        SetOperationString(localCalculation);
-        //        orderToRemove++;
-        //    }
-        //    RefreshGlobalResult(globalCalculation);
-        //}
-
         public void RefreshGlobalResult(GlobalCalculation globalCalculation)
         {
             globalCalculation.Result = globalCalculation.LocalCalculations.Any()
@@ -92,16 +69,6 @@ namespace Backend.Business
                 : 0;
             _dataAccess.Update(globalCalculation);
         }
-
-        //TODO
-        //public void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
-        //{
-        //    var toRemove = globalCalculation.LocalCalculations.ToList();
-        //    foreach (var localCalculation in toRemove) {
-        //        RemoveLocalCalculation(globalCalculation, localCalculation, false);
-        //    }
-        //    _dataAccess.Remove(globalCalculation);
-        //}
 
         public void AddNewGlobalCalculation(GlobalCalculation globalCalculation, decimal startOperand)
         {

@@ -19,7 +19,6 @@ namespace TestsFinal
     {
         static Locator()
         {
-
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             var connectionService = DependencyService.Get<ISqliteConnectionService>();
             var navigationService = new NavigationService();

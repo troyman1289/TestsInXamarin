@@ -22,8 +22,7 @@ namespace TestsFinal
         private void MenuItem_OnClicked(object sender, EventArgs e)
         {
             var menuItem = (MenuItem)sender;
-            var viewCell = (ViewCell)menuItem.BindingContext;
-            var item = (GlobalCalculation)viewCell.BindingContext;
+            var item = (GlobalCalculation)menuItem.BindingContext;
             ((MainViewModel)BindingContext).GlobalCalculations.Remove(item);
             DataAccess.GetInstance().Remove(item);
         }
