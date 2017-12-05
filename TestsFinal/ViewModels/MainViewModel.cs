@@ -65,26 +65,7 @@ namespace ViewModels
             get { return _globalCalculations; }
         }
 
-        #endregion
-
-        #region GlobalResult
-
-        private string _globalResult;
-
-        public string GlobalResult
-        {
-            get { return _globalResult; }
-            set
-            {
-                if (_globalResult != value)
-                {
-                    _globalResult = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        #endregion
+        #endregion   
 
         private void SetGlobalCalculations()
         {
