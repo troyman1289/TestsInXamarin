@@ -243,24 +243,6 @@ namespace ViewModels
 
         #endregion
 
-        #region OperationString
-
-        private string _operationString;
-
-        public string OperationString
-        {
-            get { return _operationString; }
-            set
-            {
-                if (_operationString != value) {
-                    _operationString = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        #endregion
-
         private void RefreshAll()
         {
             foreach (var localCalculation in GlobalCalculation.LocalCalculations)
