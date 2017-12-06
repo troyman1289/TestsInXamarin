@@ -239,7 +239,8 @@ namespace Backend.Business
         {
             var summarizedOperation = new Operation();
             summarizedOperation.OperatorType = operation1.OperatorType;
-            summarizedOperation.Operand = operation2.Operator.Calculate((int)operation1.Operand, (int)operation2.Operand);
+            summarizedOperation.Operand = operation2.Operator
+                .Calculate((int)operation1.Operand, (int)operation2.Operand);
             summarizedOperation.Order = operation1.Order;
             return summarizedOperation;
         }

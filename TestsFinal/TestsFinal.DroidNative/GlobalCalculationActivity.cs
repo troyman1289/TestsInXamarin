@@ -109,7 +109,7 @@ namespace TestsFinal.DroidNative
             switch (item.ItemId) {
                 case Resource.Id.DeleteItem:
                     var localCalculation = _globalCalculation.LocalCalculations[menuInfo.Position];
-                    _calculationManager.RemoveLocalCalculation(_globalCalculation,localCalculation,true);
+                    //_calculationManager.RemoveLocalCalculation(_globalCalculation,localCalculation,true);
                     RefreshAll();
                     return true;
             }

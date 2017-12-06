@@ -19,7 +19,7 @@ using Toolbar = Android.Widget.Toolbar;
 
 namespace TestsFinal.DroidNative.MVVM
 {
-    [Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
+    //[Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
     public class MainActivityWithMVVM : BaseActivity<MainViewModel>
     {
         private RelativeLayout _progressBarRelativeLayout;
@@ -88,7 +88,7 @@ namespace TestsFinal.DroidNative.MVVM
             switch (item.ItemId) {
                 case Resource.Id.DeleteItem:
                     var globalCalculation = ViewModel.GlobalCalculations[menuInfo.Position];
-                    ViewModel.RemoveGlobalCalculationCommand.Execute(globalCalculation);
+                    //ViewModel.RemoveGlobalCalculationCommand.Execute(globalCalculation);
                     return true;
             }
 

@@ -17,7 +17,7 @@ using Toolbar = Android.Widget.Toolbar;
 
 namespace TestsFinal.DroidNative
 {
-    //[Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
+    [Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
     public class MainActivity : AppCompatActivity
     {
         private RelativeLayout _progressBarRelativeLayout;
@@ -142,7 +142,7 @@ namespace TestsFinal.DroidNative
                         .SetNegativeButton("Cancel", (o, args) => { })
                         .Show();
 
-                    _calculationManager.RemoveGlobalCalculation(globalCalculation);
+                    //_calculationManager.RemoveGlobalCalculation(globalCalculation);
                     _globalCalculations.Remove(globalCalculation);
                     SetGlobalCalculations();
                     return true;
@@ -153,9 +153,9 @@ namespace TestsFinal.DroidNative
 
         private void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
         {
-            _calculationManager.RemoveGlobalCalculation(globalCalculation);
-            _globalCalculations.Remove(globalCalculation);
-            ((ListViewAdapter)_listView.Adapter).NotifyDataSetChanged();
+            //_calculationManager.RemoveGlobalCalculation(globalCalculation);
+            //_globalCalculations.Remove(globalCalculation);
+            //((ListViewAdapter)_listView.Adapter).NotifyDataSetChanged();
         }
 
     }
