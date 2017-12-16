@@ -238,7 +238,7 @@ namespace ViewModels
 
         private void HandleRemoveLocalCalculation(LocalCalculation localCalculation)
         {
-            _calculationManager.RemoveLocalCalculation(GlobalCalculation,localCalculation, true);
+            _calculationManager.RemoveLocalCalculationWithRefresh(GlobalCalculation,localCalculation);
             CurrentLocalCalculation = GlobalCalculation.LocalCalculations.OrderBy(lc => lc.Order).Last();
         }
 

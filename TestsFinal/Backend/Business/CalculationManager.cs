@@ -64,15 +64,17 @@ namespace Backend.Business
             }
         }
 
-        public void RemoveLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation, bool withRefresh)
+        public void RemoveLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation)
         {
             _dataAccess.Remove(localCalculation.Operations);
             _dataAccess.Remove(localCalculation);
-            var orderToRemove = localCalculation.Order;
             globalCalculation.LocalCalculations.Remove(localCalculation);
+        }
 
-            if(!withRefresh) return;
-
+        public void RemoveLocalCalculationWithRefresh(GlobalCalculation globalCalculation, LocalCalculation localCalculation)
+        {
+            var orderToRemove = localCalculation.Order;
+            RemoveLocalCalculation(globalCalculation, localCalculation);
             //calculate new from this position and refresh the order
             var toRefresh = globalCalculation.LocalCalculations.Where(lc => lc.Order > orderToRemove).ToList();
             foreach (var calculation in toRefresh) {
@@ -98,7 +100,7 @@ namespace Backend.Business
         {
             var toRemove = globalCalculation.LocalCalculations.ToList();
             foreach (var localCalculation in toRemove) {
-                RemoveLocalCalculation(globalCalculation, localCalculation, false);
+                RemoveLocalCalculation(globalCalculation, localCalculation);
             }
             _dataAccess.Remove(globalCalculation);
         }
@@ -191,36 +193,45 @@ namespace Backend.Business
             //- multiplication and division first, then addition and subtraction = Weight of operators
             //...
 
-            //search for bracketes and calculate them at first
-            var orderedOperations = localCalculation.Operations.OrderBy(o => o.Order).ToList();
-            while (orderedOperations.Any(o => o.BracketType == BracketType.Open))
-            {
-                var openOperation = orderedOperations.First(o => o.BracketType == BracketType.Open);
-                var closeOperation = orderedOperations.FirstOrDefault(o => o.Order >= openOperation.Order && o.BracketType == BracketType.Close);
-                if (closeOperation == null) {
-                    //take the end
-                    closeOperation = orderedOperations.Last();
+            try {
+                //search for bracketes and calculate them at first
+                var orderedOperations = localCalculation.Operations.OrderBy(o => o.Order).ToList();
+                while (orderedOperations.Any(o => o.BracketType == BracketType.Open)) {
+                    var openOperation = orderedOperations.First(o => o.BracketType == BracketType.Open);
+                    var closeOperation = orderedOperations.FirstOrDefault(o =>
+                       o.Order >= openOperation.Order && o.BracketType == BracketType.Close);
+
+                    if (closeOperation == null) {
+                        //take the end
+                        closeOperation = orderedOperations.Last();
+                    }
+
+                    var toSummarize = orderedOperations
+                        .Where(o => o.Order >= openOperation.Order && o.Order <= closeOperation.Order)
+                        .ToList();
+
+                    var summarizedOperation = Summarize(toSummarize);
+                    summarizedOperation.BracketType = BracketType.None;
+                    orderedOperations = orderedOperations.Except(toSummarize).ToList();
+                    orderedOperations.Add(summarizedOperation);
+                    orderedOperations = orderedOperations.OrderBy(o => o.Order).ToList();
                 }
 
-                var toSummarize = orderedOperations
-                    .Where(o => o.Order >= openOperation.Order && o.Order <= closeOperation.Order)
-                    .ToList();
+                //Operation with start operand
+                var startOperation = new Operation { Order = 0, Operand = localCalculation.StartOperand };
+                orderedOperations.Add(startOperation);
 
-                var summarizedOperation = Summarize(toSummarize);
-                summarizedOperation.BracketType = BracketType.None;
-                orderedOperations = orderedOperations.Except(toSummarize).ToList();
-                orderedOperations.Add(summarizedOperation);
-                orderedOperations = orderedOperations.OrderBy(o => o.Order).ToList();
+                //Calculate all operations and summarize them
+                var endOperation = Summarize(orderedOperations);
+                localCalculation.Result = Math.Round(endOperation.Operand, 2);
+                _dataAccess.Update(localCalculation);
+            } catch (DivideByZeroException) {
+                var lastOperation = localCalculation.Operations.OrderBy(o => o.Order).Last();
+                _dataAccess.Remove(lastOperation);
+                localCalculation.Operations.Remove(lastOperation);
+                SetOperationString(localCalculation);
+                SetResult(localCalculation);
             }
-
-            //Operation with start operand
-            var startOperation = new Operation {Order = 0, Operand = localCalculation.StartOperand};
-            orderedOperations.Add(startOperation);
-
-            //Calculate all operations and summarize them
-            var endOperation = Summarize(orderedOperations);
-            localCalculation.Result = Math.Round(endOperation.Operand, 2);
-            _dataAccess.Update(localCalculation);
         }
 
         private Operation Summarize(IList<Operation> operations)
