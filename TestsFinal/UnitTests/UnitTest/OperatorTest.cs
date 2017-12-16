@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace UnitTest
 {
     [TestClass]
-    public class OperationsTest
+    public class OperatorTest
     {
         [TestMethod]
         public void AdditionTest()

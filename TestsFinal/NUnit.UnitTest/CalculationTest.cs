@@ -37,22 +37,23 @@ namespace NUnit.UnitTest
         }
 
         /// <summary>
-        /// Start with 5
+        /// GlobalCalculation with StartOperand 5
         /// </summary>
         [Test, Order(1)]
         public void AddGlobalCalculationTest()
         {
             _globalCalculation = new GlobalCalculation();
+
             _manager.AddNewGlobalCalculation(_globalCalculation, 5);
 
             Assert.IsTrue(_globalCalculation.LocalCalculations.Any());
         }
 
         /// <summary>
-        /// 5+6
+        /// 5 + 6
         /// </summary>
         [Test, Order(2)]
-        public void C2_AddOperationToFirstLocalCalculationTest()
+        public void AddOperationToFirstLocalCalculationTest()
         {
             //C1_AddGlobalCalculationTest();
             var firstLocalCalculation = _globalCalculation.LocalCalculations.First();
@@ -61,6 +62,7 @@ namespace NUnit.UnitTest
                 OperatorType = OperatorType.Addition,
                 Operand = 6
             };
+
             _manager.AddOperation(firstLocalCalculation,operation);
             _manager.SetResult(firstLocalCalculation);
             _manager.RefreshGlobalResult(_globalCalculation);

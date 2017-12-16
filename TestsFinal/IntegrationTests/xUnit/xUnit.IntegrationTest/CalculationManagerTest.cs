@@ -36,6 +36,7 @@ namespace xUnit.IntegrationTest
         {
             var globalCalculation = new GlobalCalculation();
             globalCalculation.Label = "global";
+
             _calculationManager.AddNewGlobalCalculation(globalCalculation,5);
 
             //Now we expect a global calculation and a local calculation
