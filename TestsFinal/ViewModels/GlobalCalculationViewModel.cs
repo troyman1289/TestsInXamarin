@@ -238,7 +238,8 @@ namespace ViewModels
 
         private void HandleRemoveLocalCalculation(LocalCalculation localCalculation)
         {
-            throw new NotImplementedException();
+            _calculationManager.RemoveLocalCalculationWithRefresh(GlobalCalculation,localCalculation);
+            CurrentLocalCalculation = GlobalCalculation.LocalCalculations.OrderBy(lc => lc.Order).Last();
         }
 
         #endregion
