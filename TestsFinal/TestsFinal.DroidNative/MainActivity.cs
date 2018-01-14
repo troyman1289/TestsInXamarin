@@ -142,9 +142,6 @@ namespace TestsFinal.DroidNative
                         .SetNegativeButton("Cancel", (o, args) => { })
                         .Show();
 
-                    //_calculationManager.RemoveGlobalCalculation(globalCalculation);
-                    _globalCalculations.Remove(globalCalculation);
-                    SetGlobalCalculations();
                     return true;
             }
 
@@ -153,9 +150,9 @@ namespace TestsFinal.DroidNative
 
         private void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
         {
-            //_calculationManager.RemoveGlobalCalculation(globalCalculation);
-            //_globalCalculations.Remove(globalCalculation);
-            //((ListViewAdapter)_listView.Adapter).NotifyDataSetChanged();
+            _calculationManager.RemoveGlobalCalculation(globalCalculation);
+            _globalCalculations.Remove(globalCalculation);
+            ((ListViewAdapter)_listView.Adapter).NotifyDataSetChanged();
         }
 
     }
