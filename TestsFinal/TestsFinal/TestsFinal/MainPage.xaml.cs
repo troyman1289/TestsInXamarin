@@ -18,13 +18,5 @@ namespace TestsFinal
         {
             InitializeComponent();
         }
-
-        private void MenuItem_OnClicked(object sender, EventArgs e)
-        {
-            var menuItem = (MenuItem)sender;
-            var item = (GlobalCalculation)menuItem.BindingContext;
-            ((MainViewModel)BindingContext).GlobalCalculations.Remove(item);
-            DataAccess.GetInstance().Remove(item);
-        }
     }
 }

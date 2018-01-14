@@ -23,12 +23,11 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <ViewCell.ContextActions>
+                        <!--<ViewCell.ContextActions>
                             <MenuItem
-                                Clicked="MenuItem_OnClicked"
                                 IsDestructive="True"
                                 Text="Remove" />
-                        </ViewCell.ContextActions>
+                        </ViewCell.ContextActions>-->
                         <Grid BackgroundColor="GreenYellow">
                             <Grid Margin="10,0,10,0">
                                 <Grid.RowDefinitions>
