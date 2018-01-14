@@ -142,9 +142,6 @@ namespace TestsFinal.DroidNative
                         .SetNegativeButton("Cancel", (o, args) => { })
                         .Show();
 
-                    _calculationManager.RemoveGlobalCalculation(globalCalculation);
-                    _globalCalculations.Remove(globalCalculation);
-                    SetGlobalCalculations();
                     return true;
             }
 
