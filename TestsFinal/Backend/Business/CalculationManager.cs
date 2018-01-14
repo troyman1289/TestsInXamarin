@@ -82,7 +82,7 @@ namespace Backend.Business
                 var startOprand = globalCalculation.LocalCalculations.First(lc => lc.Order == orderToRemove - 1).Result;
                 calculation.StartOperand = startOprand;
                 SetResult(calculation);
-                SetOperationString(localCalculation);
+                SetOperationString(calculation);
                 orderToRemove++;
             }
             RefreshGlobalResult(globalCalculation);
