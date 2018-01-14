@@ -17,7 +17,7 @@ using Toolbar = Android.Widget.Toolbar;
 
 namespace TestsFinal.DroidNative
 {
-    //[Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
+    [Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
     public class MainActivity : AppCompatActivity
     {
         private RelativeLayout _progressBarRelativeLayout;

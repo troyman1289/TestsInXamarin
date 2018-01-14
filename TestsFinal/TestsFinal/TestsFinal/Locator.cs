@@ -23,15 +23,15 @@ namespace TestsFinal
             var connectionService = DependencyService.Get<ISqliteConnectionService>();
             var navigationService = new NavigationService();
 
+            DataAccess.Init(connectionService);
+            SimpleIoc.Default.Register<IDataAccess>(() => DataAccess.GetInstance());
+
             SimpleIoc.Default.Register<INavigationService>(() => navigationService);
             SimpleIoc.Default.Register<ISqliteConnectionService>(() => connectionService);
             SimpleIoc.Default.Register<IPopUpService, PopUpService>();
 
             SimpleIoc.Default.Register<IRestService, RestService>();
-            SimpleIoc.Default.Register<IDataAccess,DataAccess>();
             SimpleIoc.Default.Register<ICalculationManager,CalculationManager>();
-            SimpleIoc.Default.Register<CreateGlobalCalculationViewModel, CreateGlobalCalculationViewModel>();
-            SimpleIoc.Default.Register<GlobalCalculationViewModel, GlobalCalculationViewModel>();
 
             RegisterViewModelWithView<MainViewModel, MainPage>(navigationService);
             RegisterViewModelWithView<CreateGlobalCalculationViewModel, CreateGlobalCalculationPage>(navigationService);
@@ -45,12 +45,12 @@ namespace TestsFinal
             SimpleIoc.Default.Register<T>();
         }
 
-        public CreateGlobalCalculationViewModel GlobalCalculationViewModel
+        public CreateGlobalCalculationViewModel CreateGlobalCalculationViewModel
         {
             get { return ServiceLocator.Current.GetInstance<CreateGlobalCalculationViewModel>(); }
         }
 
-        public GlobalCalculationViewModel LocalCalculationViewModel
+        public GlobalCalculationViewModel GlobalCalculationViewModel
         {
             get { return ServiceLocator.Current.GetInstance<GlobalCalculationViewModel>(); }
         }

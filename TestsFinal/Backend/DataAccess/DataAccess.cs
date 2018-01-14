@@ -11,9 +11,24 @@ namespace Backend.DataAccess
 {
     public class DataAccess : IDataAccess
     {
-        private SQLiteConnection _connection;
+        private static SQLiteConnection _connection;
 
-        public DataAccess(ISqliteConnectionService sqliteConnectionService)
+        private static DataAccess _instance;
+        public static DataAccess GetInstance()
+        {
+            if (_instance == null) {
+                _instance = new DataAccess();
+            }
+
+            return _instance;
+        }
+
+        private DataAccess()
+        {
+
+        }
+
+        public static void Init(ISqliteConnectionService sqliteConnectionService)
         {
             _connection = sqliteConnectionService.GetConnection();
 

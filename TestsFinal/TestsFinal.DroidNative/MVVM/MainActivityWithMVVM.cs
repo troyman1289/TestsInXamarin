@@ -19,7 +19,7 @@ using Toolbar = Android.Widget.Toolbar;
 
 namespace TestsFinal.DroidNative.MVVM
 {
-    [Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
+    //[Activity(Label = "TestsFinal.DroidNative", MainLauncher = true, Theme = "@style/MainTheme")]
     public class MainActivityWithMVVM : BaseActivity<MainViewModel>
     {
         private RelativeLayout _progressBarRelativeLayout;

@@ -24,10 +24,7 @@ namespace TestsFinal.DroidNative.MVVM
             SimpleIoc.Default.Register<IPopUpService, PopUpService>();
 
             SimpleIoc.Default.Register<IRestService, RestService>();
-            SimpleIoc.Default.Register<IDataAccess,DataAccess>();
             SimpleIoc.Default.Register<ICalculationManager,CalculationManager>();
-            SimpleIoc.Default.Register<CreateGlobalCalculationViewModel, CreateGlobalCalculationViewModel>();
-            SimpleIoc.Default.Register<GlobalCalculationViewModel, GlobalCalculationViewModel>();
 
             RegisterViewModelWithView<MainViewModel, MainActivityWithMVVM>(navigationService);
             RegisterViewModelWithView<CreateGlobalCalculationViewModel, CreateGlobalCalculationActivityMVVM>(navigationService);
