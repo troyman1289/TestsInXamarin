@@ -19,6 +19,8 @@ namespace TestsFinal.DroidNative.MVVM
             var connectionService = new Sqlite();
             var navigationService = new NavigationService();
 
+            DataAccess.Init(connectionService);
+
             SimpleIoc.Default.Register<INavigationService>(() => navigationService);
             SimpleIoc.Default.Register<ISqliteConnectionService>(() => connectionService);
             SimpleIoc.Default.Register<IPopUpService, PopUpService>();

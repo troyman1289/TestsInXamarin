@@ -23,7 +23,8 @@ namespace TestsFinal.DroidNative
 
         static CustomLocator()
         {
-            _dataAccess = new DataAccess(new Sqlite());
+            Backend.DataAccess.DataAccess.Init(new Sqlite());
+            _dataAccess = Backend.DataAccess.DataAccess.GetInstance();
             var restService = new RestService();
             _calculationManager = new CalculationManager(_dataAccess,restService);
         }
