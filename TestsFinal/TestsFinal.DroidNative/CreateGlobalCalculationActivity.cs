@@ -27,14 +27,10 @@ namespace TestsFinal.DroidNative
             SetContentView(Resource.Layout.CreateGlobalCalculation);
 
             _labelEditText = FindViewById<EditText>(Resource.Id.LabelEditText);
-            //Bindings.Add(this.SetBinding(() => ViewModel.Description, () => _descriptionEditText.Text, BindingMode.TwoWay));
-
             _startOperandEditText = FindViewById<EditText>(Resource.Id.StartOperandEditText);
-            //Bindings.Add(this.SetBinding(() => ViewModel.Creator, () => _creatorEditText.Text, BindingMode.TwoWay));
 
             var saveButton = FindViewById<Button>(Resource.Id.ButtonSave);
             saveButton.Click += HandleSave;
-            //saveButton.SetCommand("Click", ViewModel.SaveShoppingListElementCommand);
         }
 
         private void HandleSave(object sender, EventArgs e)
