@@ -115,7 +115,7 @@ namespace Backend.Business
 
             //create first local calculation
             var localCalculation = new LocalCalculation();
-            localCalculation.Order = 0;
+            localCalculation.Order = 1;
             localCalculation.StartOperand = startOperand;
             localCalculation.ParentGlobalCalculationId = globalCalculation.Id;
             localCalculation.ParentGlobalCalculation = globalCalculation;
