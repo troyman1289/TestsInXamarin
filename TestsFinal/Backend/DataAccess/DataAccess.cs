@@ -25,7 +25,7 @@ namespace Backend.DataAccess
 
         private DataAccess()
         {
-            
+
         }
 
         public static void Init(ISqliteConnectionService sqliteConnectionService)

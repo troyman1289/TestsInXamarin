@@ -31,8 +31,6 @@ namespace TestsFinal
 
             SimpleIoc.Default.Register<IRestService, RestService>();
             SimpleIoc.Default.Register<ICalculationManager,CalculationManager>();
-            SimpleIoc.Default.Register<CreateGlobalCalculationViewModel, CreateGlobalCalculationViewModel>();
-            SimpleIoc.Default.Register<GlobalCalculationViewModel, GlobalCalculationViewModel>();
 
             RegisterViewModelWithView<MainViewModel, MainPage>(navigationService);
             RegisterViewModelWithView<CreateGlobalCalculationViewModel, CreateGlobalCalculationPage>(navigationService);
@@ -46,12 +44,12 @@ namespace TestsFinal
             SimpleIoc.Default.Register<T>();
         }
 
-        public CreateGlobalCalculationViewModel GlobalCalculationViewModel
+        public CreateGlobalCalculationViewModel CreateGlobalCalculationViewModel
         {
             get { return ServiceLocator.Current.GetInstance<CreateGlobalCalculationViewModel>(); }
         }
 
-        public GlobalCalculationViewModel LocalCalculationViewModel
+        public GlobalCalculationViewModel GlobalCalculationViewModel
         {
             get { return ServiceLocator.Current.GetInstance<GlobalCalculationViewModel>(); }
         }

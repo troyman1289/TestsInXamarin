@@ -3,7 +3,7 @@
     x:Class="TestsFinal.CreateGlobalCalculationPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    BindingContext="{Binding Source={StaticResource Locator}, Path=GlobalCalculationViewModel}">
+    BindingContext="{Binding Source={StaticResource Locator}, Path=CreateGlobalCalculationViewModel}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding SaveCalculationCommand}" Text="Save" />
     </ContentPage.ToolbarItems>
