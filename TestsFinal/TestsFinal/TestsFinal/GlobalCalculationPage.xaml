@@ -19,7 +19,7 @@
                     <ViewCell>
                         <ViewCell.ContextActions>
                             <MenuItem
-                                Command="{Binding Source={StaticResource Locator}, Path=LocalCalculationViewModel.RemoveLocalCalculationCommand}"
+                                Command="{Binding Source={StaticResource Locator}, Path=GlobalCalculationViewModel.RemoveLocalCalculationCommand}"
                                 CommandParameter="{Binding}"
                                 Text="Remove" />
                         </ViewCell.ContextActions>
