@@ -93,13 +93,13 @@ namespace ViewModels
                 if (_openCalculationCommand == null)
                 {
                     _openCalculationCommand =
-                        new RelayCommand<GlobalCalculation>(HandleOpenLocalCalculation, (globalCalculation) => !IsBusy);
+                        new RelayCommand<GlobalCalculation>(HandleOpenGlobalCalculation, (globalCalculation) => !IsBusy);
                 }
                 return _openCalculationCommand;
             }
         }
 
-        private void HandleOpenLocalCalculation(GlobalCalculation globalCalculation)
+        private void HandleOpenGlobalCalculation(GlobalCalculation globalCalculation)
         {
             _calculationManager.LoadGlobalCalculation(globalCalculation);
             _calculationViewModel.GlobalCalculation = globalCalculation;
