@@ -35,7 +35,8 @@ namespace xUnit.IntegrationTest
             _calculationManager = new CalculationManager(dataAccess, restService);
             _popUpService = new PopUpForTest();
             _popUpServiceMock = new PopUpServiceMock();
-            _mainViewModel = new MainViewModel(_calculationManager, null, _popUpServiceMock.MockedObject, null);
+            //_mainViewModel = new MainViewModel(_calculationManager, null, _popUpServiceMock.MockedObject, null);
+            _mainViewModel = new MainViewModel(_calculationManager, null, _popUpService, null);
         }
 
         public void Dispose()
@@ -44,22 +45,29 @@ namespace xUnit.IntegrationTest
         }
 
 
-        [Fact(DisplayName = "DeleteGlobalCalculation",Skip = "Skip")]
-        public void DeleteGlobalCalculationWithFakeImplementation()
+        [Theory(DisplayName = "DeleteGlobalCalculationWithFake")]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void RemoveGlobalCalculationWithFakeImplementation(bool popUpResultValue)
         {
-            _popUpService.ActionResults = new List<bool>{false,true};
+            _popUpService.ActionResultValue = popUpResultValue;
             var globalCalculation = new GlobalCalculation();
-            _calculationManager.AddNewGlobalCalculation(globalCalculation,8);
+            _calculationManager.AddNewGlobalCalculation(globalCalculation, 8);
             _mainViewModel.RefreshCalculations();
-            _mainViewModel.RemoveGlobalCalculationCommand.Execute(globalCalculation);
-            
-            //Assert.Collection(_mainViewModel.GlobalCalculations,gc => gc.Order = 1);
-            //TODO ID weg - und fragen, warum nicht true wird --> gc werden neu retrieved
-            Assert.NotEmpty(_mainViewModel.GlobalCalculations);
             globalCalculation = _mainViewModel.GlobalCalculations.First();
+
             _mainViewModel.RemoveGlobalCalculationCommand.Execute(globalCalculation);
-            Assert.DoesNotContain(_mainViewModel.GlobalCalculations, calculation => calculation == globalCalculation);
-            Assert.Empty(_connectionService.GetConnection().Table<GlobalCalculation>());
+
+            if (popUpResultValue) {
+                Assert.DoesNotContain(globalCalculation, _mainViewModel.GlobalCalculations);
+                Assert.Empty(_connectionService.GetConnection().Table<GlobalCalculation>());
+                Assert.Empty(_connectionService.GetConnection().Table<LocalCalculation>());
+                Assert.Empty(_connectionService.GetConnection().Table<Operation>());
+            } else {
+                Assert.NotEmpty(_mainViewModel.GlobalCalculations);
+                Assert.NotEmpty(_connectionService.GetConnection().Table<GlobalCalculation>());
+                Assert.Contains(globalCalculation, _mainViewModel.GlobalCalculations);
+            }
         }
 
         [Theory(DisplayName = "DeleteGlobalCalculationWithMock")]

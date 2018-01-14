@@ -7,9 +7,9 @@ using Xunit.Sdk;
 
 namespace xUnit.IntegrationTest
 {
-    public class TestOrder : ITestCaseOrderer
+    public class TestOrderer : ITestCaseOrderer
     {
-        public const string TypeName = "xUnit.IntegrationTest.TestOrder";
+        public const string TypeName = "xUnit.IntegrationTest.TestOrderer";
 
         public const string AssembyName = "xUnit.IntegrationTest";
 
@@ -30,4 +30,4 @@ namespace xUnit.IntegrationTest
             return attribute?.Order ?? 0;
         }
     }
-}
+}   

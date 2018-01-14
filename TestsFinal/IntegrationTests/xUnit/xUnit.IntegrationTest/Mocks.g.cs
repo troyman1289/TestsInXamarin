@@ -26,9 +26,14 @@ namespace Backend.Interfaces.Mocks
             return this.Apply(x => x.GetAllGlobalCalculations());
         }
 
-        public void RemoveLocalCalculation(global::Backend.Model.GlobalCalculation globalCalculation, global::Backend.Model.LocalCalculation localCalculation, global::System.Boolean withRefresh)
+        public void RemoveLocalCalculation(global::Backend.Model.GlobalCalculation globalCalculation, global::Backend.Model.LocalCalculation localCalculation)
         {
-            this.Apply(x => x.RemoveLocalCalculation(globalCalculation, localCalculation, withRefresh));
+            this.Apply(x => x.RemoveLocalCalculation(globalCalculation, localCalculation));
+        }
+
+        public void RemoveLocalCalculationWithRefresh(global::Backend.Model.GlobalCalculation globalCalculation, global::Backend.Model.LocalCalculation localCalculation)
+        {
+            this.Apply(x => x.RemoveLocalCalculationWithRefresh(globalCalculation, localCalculation));
         }
 
         public void AddNewGlobalCalculation(global::Backend.Model.GlobalCalculation globalCalculation, global::System.Decimal startOperand)

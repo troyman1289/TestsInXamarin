@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Backend.Business;
 using Backend.DataAccess;
+using Backend.Model;
 using SQLite.Net;
 using Xamarin.Forms;
 
@@ -15,15 +16,19 @@ namespace xUnit.IntegrationTest
         public SQLiteConnection Connection { get; private set; }
         public CalculationManager CalculationManager { get; private set; }
         private readonly ISqliteConnectionForTest _sqliteConnection;
-        private List<string> _executedMethods;
+
+        public GlobalCalculation GlobalCalculation { get; }
+
+        private List<string> _executedMethods = new List<string>();
 
         public TestClassFixture()
         {
             _sqliteConnection = DependencyService.Get<ISqliteConnectionForTest>();
             Connection = _sqliteConnection.GetConnection();
-            _executedMethods = new List<string>();
             CalculationManager = new CalculationManager(new DataAccess(_sqliteConnection),null);
+            GlobalCalculation = new GlobalCalculation();
         }
+
 
         public void Dispose()
         {

@@ -43,24 +43,24 @@ namespace NUnit.IntegrationTest
             _connectionService.TeardownAndDelete();
         }
 
-
-        [Test]
-        [Ignore("Skip")]
-        public void DeleteGlobalCalculationWithFakeImplementation()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void DeleteGlobalCalculationWithFakeImplementation(bool popUpResultValue)
         {
-            _popUpService.ActionResults = new List<bool>{false,true};
+            _popUpService.ActionResultValue = popUpResultValue;
             var globalCalculation = new GlobalCalculation();
             _calculationManager.AddNewGlobalCalculation(globalCalculation,8);
             _mainViewModel.RefreshCalculations();
+
             _mainViewModel.RemoveGlobalCalculationCommand.Execute(globalCalculation);
-            
-            //Assert.Collection(_mainViewModel.GlobalCalculations,gc => gc.Order = 1);
-            //TODO ID weg - und fragen, warum nicht true wird --> gc werden neu retrieved
-            Assert.IsNotEmpty(_mainViewModel.GlobalCalculations);
-            globalCalculation = _mainViewModel.GlobalCalculations.First();
-            _mainViewModel.RemoveGlobalCalculationCommand.Execute(globalCalculation);
-            Assert.False(_mainViewModel.GlobalCalculations.Contains(globalCalculation));
-            Assert.IsEmpty(_connectionService.GetConnection().Table<GlobalCalculation>());
+
+            if (popUpResultValue) { 
+
+            } else {
+                Assert.IsNotEmpty(_mainViewModel.GlobalCalculations);
+                Assert.False(_mainViewModel.GlobalCalculations.Contains(globalCalculation));
+                Assert.IsEmpty(_connectionService.GetConnection().Table<GlobalCalculation>());
+            }
         }
 
         [TestCase(false,false)]

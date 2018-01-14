@@ -7,7 +7,7 @@ using Xunit;
 
 namespace xUnit.IntegrationTest
 {
-    [TestCaseOrderer(TestOrder.TypeName, TestOrder.AssembyName)]
+    [TestCaseOrderer(TestOrderer.TypeName, TestOrderer.AssembyName)]
     public class CalculationTest : IClassFixture<TestClassFixture>
     {
         private readonly TestClassFixture _fixture;
@@ -18,11 +18,10 @@ namespace xUnit.IntegrationTest
         }
 
         [Fact(DisplayName = "Calculation_AddGlobalCalculationTest"), Order(1)]
-        public void Calculation_AddGlobalCalculationTest()
+        public void AddGlobalCalculationTest()
         {
             _fixture.CheckOrder();
-            var globalCalculation = new GlobalCalculation();
-            _fixture.CalculationManager.AddNewGlobalCalculation(globalCalculation, 5);
+            _fixture.CalculationManager.AddNewGlobalCalculation(_fixture.GlobalCalculation, 5);
 
             //Now we expect a global calculation and a local calculation
             //we ask the database directly   
@@ -34,12 +33,11 @@ namespace xUnit.IntegrationTest
 
 
         [Fact(DisplayName = "Calculation_AddOperationToFirstLocalCalculationTest"), Order(2)]
-        public void Calculation_AddOperationToFirstLocalCalculationTest()
+        public void AddOperationToFirstLocalCalculationTest()
         {
             _fixture.CheckOrder();
-            var globalCalculation = _fixture.CalculationManager.GetAllGlobalCalculations().First();
-            _fixture.CalculationManager.LoadGlobalCalculation(globalCalculation);
-            var firstLocalCalculation = globalCalculation.LocalCalculations.First();
+            _fixture.CalculationManager.LoadGlobalCalculation(_fixture.GlobalCalculation);
+            var firstLocalCalculation = _fixture.GlobalCalculation.LocalCalculations.First();
             var operation = new Operation {
                 OperatorType = OperatorType.Addition,
                 Operand = 6
@@ -47,10 +45,10 @@ namespace xUnit.IntegrationTest
 
             _fixture.CalculationManager.AddOperation(firstLocalCalculation, operation);
             _fixture.CalculationManager.SetResult(firstLocalCalculation);
-            _fixture.CalculationManager.RefreshGlobalResult(globalCalculation);
+            _fixture.CalculationManager.RefreshGlobalResult(_fixture.GlobalCalculation);
 
             Assert.Equal(11, firstLocalCalculation.Result);
-            Assert.Equal(11, globalCalculation.Result);
+            Assert.Equal(11, _fixture.GlobalCalculation.Result);
             Assert.NotEmpty(_fixture.Connection.Table<Operation>());
         }
 

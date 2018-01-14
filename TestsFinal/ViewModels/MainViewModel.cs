@@ -192,17 +192,18 @@ namespace ViewModels
                     RemoveGlobalCalculation(globalCalculation);
                 }
             });
+
         }
 
         private void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
         {
+            _calculationManager.LoadGlobalCalculation(globalCalculation);
             _calculationManager.RemoveGlobalCalculation(globalCalculation);
             GlobalCalculations.Remove(globalCalculation);
         }
 
         private void RemoveGlobalCalculationWithLocator(GlobalCalculation globalCalculation)
         {
-            //_calculationManager.RemoveGlobalCalculation(globalCalculation);
             var manager = ServiceLocator.Current.GetInstance<ICalculationManager>();
             manager.RemoveGlobalCalculation(globalCalculation);
             GlobalCalculations.Remove(globalCalculation);
