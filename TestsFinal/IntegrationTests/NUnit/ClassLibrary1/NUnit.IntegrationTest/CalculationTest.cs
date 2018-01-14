@@ -2,6 +2,7 @@
 using System.Linq;
 using Backend.Business;
 using Backend.DataAccess;
+using Backend.Interfaces;
 using Backend.Model;
 using Backend.RestService;
 using NUnit.Framework;
@@ -15,23 +16,22 @@ namespace NUnit.IntegrationTest
     {
         private SQLiteConnection _connection;
         private CalculationManager _calculationManager;
-        private ISqliteConnectionForTest _sqliteConnection;
-        private List<string> _executedMethods;
+        private ISqliteConnectionService _sqliteConnection;
 
 
         [OneTimeSetUp]
         public void Setup()
         {
-            _sqliteConnection = DependencyService.Get<ISqliteConnectionForTest>();
+            _sqliteConnection = DependencyService.Get<ISqliteConnectionService>();
+            DataAccess.Init(_sqliteConnection);
             _connection = _sqliteConnection.GetConnection();
-            _executedMethods = new List<string>();
-            _calculationManager = new CalculationManager(new DataAccess(_sqliteConnection), null);
+            _calculationManager = new CalculationManager(DataAccess.GetInstance(), null);
         }
 
         [OneTimeTearDown]
         public void TearDown()
         {
-            _sqliteConnection.TeardownAndDelete();
+            DatabaseHelper.CleanupDatabase(_connection);
         }
 
         [Test, Order(1)]

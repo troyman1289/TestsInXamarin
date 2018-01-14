@@ -92,7 +92,7 @@ namespace Backend.Model
                     Operator = Operators.Addition;
                     break;
                 case OperatorType.Subtraction:
-                    Operator = Operators.Substraction;
+                    Operator = Operators.Subtraction;
                     break;
                 case OperatorType.Multiplication:
                     Operator = Operators.Multiplication;

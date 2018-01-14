@@ -35,10 +35,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CalculationHelper.cs" />
     <Compile Include="CalculationManagerTest.cs" />
     <Compile Include="CalculationTest.cs" />
-    <Compile Include="ISqliteConnectionForTest.cs" />
-    <Compile Include="Locator.cs" />
+    <Compile Include="DatabaseHelper.cs" />
+    <Compile Include="GlobalCalculationViewModelTest.cs" />
     <Compile Include="MainViewModelTest.cs" />
     <Compile Include="Mocks.g.cs">
       <AutoGen>True</AutoGen>

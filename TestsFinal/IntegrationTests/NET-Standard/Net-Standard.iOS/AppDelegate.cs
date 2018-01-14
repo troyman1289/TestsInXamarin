@@ -1,5 +1,6 @@
 ﻿using Foundation;
 using UIKit;
+using xUnit.IntegrationTest;
 using Xunit.Runner;
 using Xunit.Sdk;
 
@@ -18,7 +19,7 @@ namespace Net_Standard.iOS
 
 
             // tests can be inside the main assembly
-            AddTestAssembly(typeof(Class1).Assembly);
+            AddTestAssembly(typeof(MainViewModelTest).Assembly);
             // otherwise you need to ensure that the test assemblies will 
             // become part of the app bundle
             //AddTestAssembly(typeof(PortableTests).Assembly);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Backend.Business;
 using Backend.DataAccess;
 using Backend.Interfaces;
@@ -12,15 +13,15 @@ namespace NUnit.IntegrationTest
     [TestFixture]
     public class CalculationManagerTest
     {
-        private ICalculationManager _calculationManager;
-        private ISqliteConnectionForTest _connectionService;
+        private CalculationManager _calculationManager;
+        private ISqliteConnectionService _connectionService;
 
         [SetUp]
         public void Setup()
         {
-            _connectionService = DependencyService.Get<ISqliteConnectionForTest>();
-           // _connectionService.TeardownAndDelete();
-            var dataAccess = new DataAccess(_connectionService);
+            _connectionService = DependencyService.Get<ISqliteConnectionService>();
+            DataAccess.Init(_connectionService);
+            var dataAccess = DataAccess.GetInstance();
             var restService = new RestService();
             _calculationManager = new CalculationManager(dataAccess, restService);
         }
@@ -28,33 +29,32 @@ namespace NUnit.IntegrationTest
         [TearDown]
         public void TearDown()
         {
-            _connectionService.TeardownAndDelete();
+            var connection = _connectionService.GetConnection();
+            DatabaseHelper.CleanupDatabase(connection);
         }
 
-        [Test(Description = "d")]
+        [Test(Description = "AddNewGlobalCalculationTest")]
         public void AddGlobalCalculationTest()
         {
             var globalCalculation = new GlobalCalculation();
             globalCalculation.Label = "global";
-            _calculationManager.AddNewGlobalCalculation(globalCalculation,5);
 
-            //Now we expect a global calculation and a local calculation
-            //we ask the database directly   
+            _calculationManager.AddNewGlobalCalculation(globalCalculation, 5);
+
             var connection = _connectionService.GetConnection();
-            Assert.AreEqual(connection.Table<GlobalCalculation>().Count(),1);
-            Assert.AreEqual(connection.Table<LocalCalculation>().Count(),1);
-            Assert.AreEqual(connection.Table<GlobalCalculation>().First().Label,"global");
-            Assert.AreEqual(connection.Table<LocalCalculation>().First().StartOperand,5);
+            Assert.AreEqual(1, connection.Table<GlobalCalculation>().Count());
+            Assert.AreEqual(1, connection.Table<LocalCalculation>().Count());
+            Assert.AreEqual("global", connection.Table<GlobalCalculation>().First().Label);
+            Assert.AreEqual(5, connection.Table<LocalCalculation>().First().StartOperand);
         }
 
         [Test]
         public void AddLocalCalculationTest()
         {
             var globalCalculation = new GlobalCalculation();
-            globalCalculation.Label = "global";
-            _calculationManager.AddNewGlobalCalculation(globalCalculation, 5);
-
             var localCalculation = new LocalCalculation();
+
+            _calculationManager.AddNewGlobalCalculation(globalCalculation, 5);
             _calculationManager.AddNewLocalCalculation(globalCalculation, localCalculation);
 
             var connection = _connectionService.GetConnection();
@@ -66,9 +66,11 @@ namespace NUnit.IntegrationTest
         {
             _calculationManager.FetchGlobalCalculationsFromServiceAsync().Wait();
             var connection = _connectionService.GetConnection();
-            Assert.AreEqual(connection.Table<GlobalCalculation>().Count(), 1);
-            Assert.AreEqual(connection.Table<LocalCalculation>().Count(), 2);
-            Assert.AreEqual(connection.Table<GlobalCalculation>().First().Result,9);
+
+            Assert.True(connection.Table<GlobalCalculation>().Any());
+            Assert.True(connection.Table<LocalCalculation>().Count() > 1 
+                && connection.Table<LocalCalculation>().Count() < 4);
+            Assert.True(connection.Table<GlobalCalculation>().First().Result > 9);
         }
     }
 }

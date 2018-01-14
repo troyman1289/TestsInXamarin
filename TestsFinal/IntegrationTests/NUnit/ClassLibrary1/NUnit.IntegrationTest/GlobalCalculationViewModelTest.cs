@@ -7,21 +7,21 @@ using Backend.Business;
 using Backend.DataAccess;
 using Backend.Interfaces;
 using Backend.Model;
-using Backend.Model.Operator;
 using Backend.RestService;
+using NUnit.Framework;
 using ViewModels;
 using Xamarin.Forms;
-using Xunit;
 
-namespace xUnit.IntegrationTest
+namespace NUnit.IntegrationTest
 {
-    public class GlobalCalculationViewModelTest : IDisposable
+    public class GlobalCalculationViewModelTest
     {
-        private readonly GlobalCalculationViewModel _globalCalculationViewModel;
+        private GlobalCalculationViewModel _globalCalculationViewModel;
         private CalculationManager _calculationManager;
         private ISqliteConnectionService _connectionService;
 
-        public GlobalCalculationViewModelTest()
+        [SetUp]
+        public void Setup()
         {
             _connectionService = DependencyService.Get<ISqliteConnectionService>();
             DataAccess.Init(_connectionService);
@@ -33,12 +33,13 @@ namespace xUnit.IntegrationTest
                 CalculationHelper.CreateNewGlobalCalculationAndOneOperation(_calculationManager);
         }
 
-        public void Dispose()
+        [TearDown]
+        public void Teardown()
         {
             DatabaseHelper.CleanupDatabase(_connectionService.GetConnection());
         }
 
-        [Fact(DisplayName = "CanAddBracketTest1")]
+        [Test]
         public void CanAddBracketTest1()
         {
             //8+2
@@ -46,7 +47,7 @@ namespace xUnit.IntegrationTest
             Assert.False(_globalCalculationViewModel.CanUseCloseBracket);
         }
 
-        [Fact(DisplayName = "CanAddBracketTest2")]
+        [Test]
         public void CanAddBracketTest2()
         {
             //8+2+(4...
@@ -60,7 +61,7 @@ namespace xUnit.IntegrationTest
             Assert.True(_globalCalculationViewModel.CanUseCloseBracket);
         }
 
-        [Fact(DisplayName = "CanAddBracketTest3")]
+        [Test]
         public void CanAddBracketTest3()
         {
             var localCalculation =

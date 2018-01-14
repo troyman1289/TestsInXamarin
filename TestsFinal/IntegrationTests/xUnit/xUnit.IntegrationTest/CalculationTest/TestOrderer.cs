@@ -5,11 +5,11 @@ using System.Reflection;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace xUnit.IntegrationTest
+namespace xUnit.IntegrationTest.CalculationTest
 {
     public class TestOrderer : ITestCaseOrderer
     {
-        public const string TypeName = "xUnit.IntegrationTest.TestOrderer";
+        public const string TypeName = "xUnit.IntegrationTest.CalculationTest.TestOrderer";
 
         public const string AssembyName = "xUnit.IntegrationTest";
 
@@ -30,4 +30,4 @@ namespace xUnit.IntegrationTest
             return attribute?.Order ?? 0;
         }
     }
-}   
+}

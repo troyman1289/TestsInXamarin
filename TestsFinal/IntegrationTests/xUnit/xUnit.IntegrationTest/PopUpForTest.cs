@@ -8,14 +8,14 @@ namespace xUnit.IntegrationTest
     {
         public bool ActionResultValue { get; set; }
 
-        public void ShowOkCancelPopUp(string title, string message, Action<bool> resultAction)
-        {
-            resultAction.Invoke(ActionResultValue);
-        }
-
         public void ShowAlertPopUp(string title, string message, Action resultAction)
         {
             throw new NotImplementedException();
+        }
+
+        public void ShowOkCancelPopUp(string title, string message, Action<bool> resultAction)
+        {
+            resultAction.Invoke(ActionResultValue);
         }
     }
 }

@@ -3,9 +3,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Backend.Model;
 using xUnit.IntegrationTest;
+using xUnit.IntegrationTest.CalculationTest;
 using Xunit;
 
-namespace xUnit.IntegrationTest
+namespace xUnit.IntegrationTest.CalculationTest
 {
     [TestCaseOrderer(TestOrderer.TypeName, TestOrderer.AssembyName)]
     public class CalculationTest : IClassFixture<TestClassFixture>
@@ -25,18 +26,16 @@ namespace xUnit.IntegrationTest
 
             //Now we expect a global calculation and a local calculation
             //we ask the database directly   
-            var connection = _fixture.Connection;
-            Assert.Equal(1, connection.Table<GlobalCalculation>().Count());
-            Assert.Equal(1, connection.Table<LocalCalculation>().Count());
-            Assert.Equal(5, connection.Table<LocalCalculation>().First().StartOperand);
+            Assert.Equal(1, _fixture.Connection.Table<GlobalCalculation>().Count());
+            Assert.Equal(1, _fixture.Connection.Table<LocalCalculation>().Count());
+            Assert.Equal(5, _fixture.Connection.Table<LocalCalculation>().First().StartOperand);
         }
 
 
-        [Fact(DisplayName = "Calculation_AddOperationToFirstLocalCalculationTest"), Order(2)]
+        [Fact(DisplayName = "CalculationTest_AddOperationToFirstLocalCalculationTest"), Order(2)]
         public void AddOperationToFirstLocalCalculationTest()
         {
             _fixture.CheckOrder();
-            _fixture.CalculationManager.LoadGlobalCalculation(_fixture.GlobalCalculation);
             var firstLocalCalculation = _fixture.GlobalCalculation.LocalCalculations.First();
             var operation = new Operation {
                 OperatorType = OperatorType.Addition,
@@ -51,7 +50,5 @@ namespace xUnit.IntegrationTest
             Assert.Equal(11, _fixture.GlobalCalculation.Result);
             Assert.NotEmpty(_fixture.Connection.Table<Operation>());
         }
-
-        //...Further Tests
     }
 }

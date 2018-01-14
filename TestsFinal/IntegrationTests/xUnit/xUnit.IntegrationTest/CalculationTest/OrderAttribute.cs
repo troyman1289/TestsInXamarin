@@ -1,6 +1,6 @@
 using System;
 
-namespace xUnit.IntegrationTest
+namespace xUnit.IntegrationTest.CalculationTest
 {
     public class OrderAttribute : Attribute
     {

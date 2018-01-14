@@ -2,6 +2,7 @@
 using Android.Widget;
 using Android.OS;
 using Xunit.Runners.UI;
+using xUnit.IntegrationTest;
 using Xunit.Sdk;
 
 namespace Net_Standard.Droid
@@ -12,11 +13,8 @@ namespace Net_Standard.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             AddExecutionAssembly(typeof(ExtensibilityPointFactory).Assembly);
-            AddTestAssembly(typeof(TestClass).Assembly);
+            AddTestAssembly(typeof(MainViewModelTest).Assembly);
             base.OnCreate(savedInstanceState);
-
-            // Set our view from the "main" layout resource
-           // SetContentView(Resource.Layout.Main);
         }
     }
 }

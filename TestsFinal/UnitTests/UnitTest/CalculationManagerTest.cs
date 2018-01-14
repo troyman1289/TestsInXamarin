@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Backend.Business;
 using Backend.Interfaces;
@@ -11,7 +12,7 @@ namespace UnitTest
     [TestClass]
     public class CalculationManagerTest
     {
-        private CalculationManager _manager;
+        private CalculationManager _calculationManager;
 
         ///// <summary>
         ///// general setup - called once
@@ -37,8 +38,21 @@ namespace UnitTest
         [TestInitialize]
         public void TestSetup()
         {
+            var globalcalculations = new List<GlobalCalculation>();
             var mockDatabase = new Mock<IDataAccess>();
-            _manager = new CalculationManager(mockDatabase.Object,null);
+            mockDatabase
+                .Setup(da => da.GetAllGlobalCalculations())
+                .Returns(globalcalculations);
+
+            //mockDatabase
+            //    .Setup(da => da.Insert(It.IsAny<object>()))
+            //    .Callback<object>((o) => {
+            //        globalcalculations.Add((GlobalCalculation)o);
+            //    });
+            //mockDatabase.Object
+            //    .Insert(new GlobalCalculation() { Label = "X" });
+
+            _calculationManager = new CalculationManager(mockDatabase.Object, null);
         }
 
         /// <summary>
@@ -50,33 +64,6 @@ namespace UnitTest
             
         }
 
-        [TestMethod]
-        public void AddOperationTest()
-        {
-            var localCalculation = new LocalCalculation();
-            localCalculation.Operations.Add(new Operation{Order = 1});
-            localCalculation.Operations.Add(new Operation{Order = 2});
-            var operation = new Operation();
-            _manager.AddOperation(localCalculation, operation);
-
-            Assert.AreEqual(localCalculation.Operations.Count,3);
-            Assert.AreEqual(operation.Order,3);
-        }
-
-        [TestMethod]
-        public void CalculationTest()
-        {
-            var localCalculation = new LocalCalculation();
-            localCalculation.Operations.Add(new Operation { Order = 1 });
-            localCalculation.Operations.Add(new Operation { Order = 2 });
-            var operation = new Operation();
-
-            _manager.AddOperation(localCalculation, operation);
-
-            Assert.AreEqual(localCalculation.Operations.Count, 3);
-            Assert.AreEqual(operation.Order, 3);
-        }
-
         /// <summary>
         /// We expect that the last operation will be removed if we have divide by zero
         /// </summary>
@@ -85,15 +72,15 @@ namespace UnitTest
         {
             //Arrange
             var globalCalculation = new GlobalCalculation();
-            _manager.AddNewGlobalCalculation(globalCalculation, 2);
+            _calculationManager.AddNewGlobalCalculation(globalCalculation, 2);
             var localCalculation = globalCalculation.LocalCalculations.First();
             var operation = new Operation { OperatorType = OperatorType.Addition, Operand = 2 };
-            _manager.AddOperation(localCalculation, operation);
+            _calculationManager.AddOperation(localCalculation, operation);
             operation = new Operation { OperatorType = OperatorType.Division, Operand = 0 };
-            _manager.AddOperation(localCalculation, operation);
+            _calculationManager.AddOperation(localCalculation, operation);
 
             //Act
-            _manager.SetResult(localCalculation);
+            _calculationManager.SetResult(localCalculation);
 
             //Assert
             Assert.AreEqual(globalCalculation.LocalCalculations.First().Result, 4);

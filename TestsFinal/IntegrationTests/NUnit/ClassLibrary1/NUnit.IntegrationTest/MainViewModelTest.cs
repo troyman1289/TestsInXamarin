@@ -8,6 +8,8 @@ using Backend.Interfaces;
 using Backend.Interfaces.Mocks;
 using Backend.Model;
 using Backend.RestService;
+using GalaSoft.MvvmLight.Ioc;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using PCLMock;
 using ViewModels;
@@ -18,89 +20,107 @@ namespace NUnit.IntegrationTest
 
     public class MainViewModelTest
     {
-        private MainViewModel _mainViewModel;
-        private ISqliteConnectionForTest _connectionService;
-        private ICalculationManager _calculationManager;
         private PopUpForTest _popUpService;
+        private MainViewModel _mainViewModel;
+        private CalculationManager _calculationManager;
+        private ISqliteConnectionService _connectionService;
         private PopUpServiceMock _popUpServiceMock;
 
         [SetUp]
         public void Setup()
         {
-            Locator.Init();
-            _connectionService = DependencyService.Get<ISqliteConnectionForTest>();
-            var dataAccess = new DataAccess(_connectionService);
+            if (!ServiceLocator.IsLocationProviderSet) {
+                ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
+                var connectionService = DependencyService.Get<ISqliteConnectionService>();
+                DataAccess.Init(connectionService);
+                SimpleIoc.Default.Register<IDataAccess>(() => DataAccess.GetInstance());
+                SimpleIoc.Default.Register<ISqliteConnectionService>(() => connectionService);
+                SimpleIoc.Default.Register<IRestService, RestService>();
+                SimpleIoc.Default.Register<ICalculationManager, CalculationManager>();
+            }
+
+            _connectionService = DependencyService.Get<ISqliteConnectionService>();
+            DataAccess.Init(_connectionService);
+            var dataAccess = DataAccess.GetInstance();
             var restService = new RestService();
             _calculationManager = new CalculationManager(dataAccess, restService);
-            _popUpService = new PopUpForTest();
+            CalculationHelper.CreateNewGlobalCalculationAndOneOperation(_calculationManager);
+            //_popUpService = new PopUpForTest();
+            //_mainViewModel = new MainViewModel(_calculationManager, null, _popUpService, null);
             _popUpServiceMock = new PopUpServiceMock();
             _mainViewModel = new MainViewModel(_calculationManager, null, _popUpServiceMock.MockedObject, null);
+            _mainViewModel.RefreshCalculations();
         }
 
         [TearDown]
         public void Teardown()
         {
-            _connectionService.TeardownAndDelete();
+            DatabaseHelper.CleanupDatabase(_connectionService.GetConnection());
+        }
+
+        [TestCase(false,Ignore = "skip")]
+        [TestCase(true, Ignore = "skip")]
+        public void RemoveGlobalCalculation(bool popUpResultValue)
+        {
+            //Arange
+            _popUpService.ActionResultValue = popUpResultValue;
+            var globalCalculation = _mainViewModel.GlobalCalculations.First();
+
+            //Act
+            _mainViewModel.RemoveGlobalCalculationCommand.Execute(globalCalculation);
+
+            if (popUpResultValue) {
+                Assert.False(_mainViewModel.GlobalCalculations.Contains(globalCalculation));
+                Assert.IsEmpty(_connectionService.GetConnection().Table<GlobalCalculation>());
+                Assert.IsEmpty(_connectionService.GetConnection().Table<LocalCalculation>());
+                Assert.IsEmpty(_connectionService.GetConnection().Table<Operation>());
+            } else {
+                Assert.IsNotEmpty(_mainViewModel.GlobalCalculations);
+                Assert.IsEmpty(_connectionService.GetConnection().Table<GlobalCalculation>());
+                Assert.Contains(globalCalculation, _mainViewModel.GlobalCalculations);
+            }
         }
 
         [TestCase(false)]
         [TestCase(true)]
-        public void DeleteGlobalCalculationWithFakeImplementation(bool popUpResultValue)
+        public void RemoveGlobalCalculationWithMock(bool popUpResultValue)
         {
-            _popUpService.ActionResultValue = popUpResultValue;
-            var globalCalculation = new GlobalCalculation();
-            _calculationManager.AddNewGlobalCalculation(globalCalculation,8);
-            _mainViewModel.RefreshCalculations();
-
-            _mainViewModel.RemoveGlobalCalculationCommand.Execute(globalCalculation);
-
-            if (popUpResultValue) { 
-
-            } else {
-                Assert.IsNotEmpty(_mainViewModel.GlobalCalculations);
-                Assert.False(_mainViewModel.GlobalCalculations.Contains(globalCalculation));
-                Assert.IsEmpty(_connectionService.GetConnection().Table<GlobalCalculation>());
-            }
-        }
-
-        [TestCase(false,false)]
-        [TestCase(true, true)]
-        public void DeleteGlobalCalculationWithMock(bool popSuccess, bool shouldbeDeleted)
-        {
-
-            var globalCalculation = new GlobalCalculation();
-            _calculationManager.AddNewGlobalCalculation(globalCalculation, 8);
-            _mainViewModel.RefreshCalculations();
-            globalCalculation = _mainViewModel.GlobalCalculations.First();
-
+            //Arange
+            var globalCalculation = _mainViewModel.GlobalCalculations.First();
             _popUpServiceMock.When(service => service.ShowOkCancelPopUp(
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<Action<bool>>()))
-            .Do<string, string, Action<bool>>((s, s1, arg3) => arg3.Invoke(popSuccess));
+               It.IsAny<string>(),
+               It.IsAny<string>(),
+               It.IsAny<Action<bool>>()))
+            .Do<string, string, Action<bool>>((s, s1, arg3) => arg3.Invoke(popUpResultValue));
 
+            //Act
             _mainViewModel.RemoveGlobalCalculationCommand.Execute(globalCalculation);
 
-            if (shouldbeDeleted) {
-                Assert.False(_mainViewModel.GlobalCalculations.Contains(globalCalculation));
+
+            if (popUpResultValue) {
                 Assert.IsEmpty(_connectionService.GetConnection().Table<GlobalCalculation>());
+                Assert.IsEmpty(_connectionService.GetConnection().Table<LocalCalculation>());
+                Assert.IsEmpty(_connectionService.GetConnection().Table<Operation>());
             } else {
                 Assert.IsNotEmpty(_mainViewModel.GlobalCalculations);
+                Assert.IsNotEmpty(_connectionService.GetConnection().Table<GlobalCalculation>());
+                Assert.Contains(globalCalculation, _mainViewModel.GlobalCalculations);
             }
+
+            var v = _popUpServiceMock.Verify(
+                e => e.ShowOkCancelPopUp("Remove", It.IsLike("Do you want"), It.IsAny<Action<bool>>()));
+            v.WasCalledExactly(1);
         }
 
         [Test]
         public void DeleteGlobalCalculationWithoutCommand()
         {
-            var globalCalculation = new GlobalCalculation();
-            _calculationManager.AddNewGlobalCalculation(globalCalculation, 8);
-            _mainViewModel.RefreshCalculations();
-            globalCalculation = _mainViewModel.GlobalCalculations.First();
+            var globalCalculation = _mainViewModel.GlobalCalculations.First();
 
-            //Reflection
+            //Act with Reflection
             _mainViewModel.GetType().GetRuntimeMethods()
                 .First(m => m.Name == "RemoveGlobalCalculation")
-                .Invoke(_mainViewModel, new[] {globalCalculation});
+                .Invoke(_mainViewModel, new[] { globalCalculation });
 
             Assert.IsEmpty(_mainViewModel.GlobalCalculations);
         }
@@ -108,12 +128,9 @@ namespace NUnit.IntegrationTest
         [Test]
         public void DeleteGlobalCalculationWithLocator()
         {
-            var globalCalculation = new GlobalCalculation();
-            _calculationManager.AddNewGlobalCalculation(globalCalculation, 8);
-            _mainViewModel.RefreshCalculations();
-            globalCalculation = _mainViewModel.GlobalCalculations.First();
+            var globalCalculation = _mainViewModel.GlobalCalculations.First();
 
-            //Reflection
+            //Act with Reflection
             _mainViewModel.GetType().GetRuntimeMethods()
                 .First(m => m.Name == "RemoveGlobalCalculationWithLocator")
                 .Invoke(_mainViewModel, new[] { globalCalculation });

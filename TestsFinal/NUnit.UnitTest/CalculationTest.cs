@@ -11,7 +11,7 @@ namespace NUnit.UnitTest
     [TestFixture]
     public class CalculationTest
     {
-        private static CalculationManager _manager;
+        private static CalculationManager _calculationManager;
         private static GlobalCalculation _globalCalculation;
 
         ///// <summary>
@@ -23,7 +23,7 @@ namespace NUnit.UnitTest
             var globalCalculations = new List<GlobalCalculation>();
             var mockDatabase = new Mock<IDataAccess>();
             mockDatabase.Setup(access => access.GetAllGlobalCalculations()).Returns(globalCalculations);
-            _manager = new CalculationManager(mockDatabase.Object,null);
+            _calculationManager = new CalculationManager(mockDatabase.Object, null);
             _globalCalculation = new GlobalCalculation();
         }
 
@@ -44,7 +44,8 @@ namespace NUnit.UnitTest
         {
             _globalCalculation = new GlobalCalculation();
 
-            _manager.AddNewGlobalCalculation(_globalCalculation, 5);
+            _calculationManager
+                .AddNewGlobalCalculation(_globalCalculation, 5);
 
             Assert.IsTrue(_globalCalculation.LocalCalculations.Any());
         }
@@ -55,17 +56,19 @@ namespace NUnit.UnitTest
         [Test, Order(2)]
         public void AddOperationToFirstLocalCalculationTest()
         {
-            //C1_AddGlobalCalculationTest();
-            var firstLocalCalculation = _globalCalculation.LocalCalculations.First();
-            var operation = new Operation
-            {
+            var firstLocalCalculation =
+                _globalCalculation.LocalCalculations.First();
+            var operation = new Operation {
                 OperatorType = OperatorType.Addition,
                 Operand = 6
             };
 
-            _manager.AddOperation(firstLocalCalculation,operation);
-            _manager.SetResult(firstLocalCalculation);
-            _manager.RefreshGlobalResult(_globalCalculation);
+            _calculationManager
+                .AddOperation(firstLocalCalculation, operation);
+            _calculationManager
+                .SetResult(firstLocalCalculation);
+            _calculationManager
+                .RefreshGlobalResult(_globalCalculation);
 
             Assert.AreEqual(firstLocalCalculation.Result, 11);
             Assert.AreEqual(_globalCalculation.Result, 11);
@@ -75,76 +78,40 @@ namespace NUnit.UnitTest
         /// 5+6*(2-4) = -7
         /// </summary>
         [Test, Order(3)]
-        public void C3_AddOperationsWithBracketToLocalCalculationTest()
+        public void AddOperationsWithBracketTest()
         {
             var firstLocalCalculation = _globalCalculation.LocalCalculations.First();
-            var operation = new Operation
-            {
+            var openOperation = new Operation {
                 BracketType = BracketType.Open,
                 Operand = 2,
                 OperatorType = OperatorType.Multiplication
             };
-            _manager.AddOperation(firstLocalCalculation, operation);
-
-            operation = new Operation {
+            var closeOperation = new Operation {
                 BracketType = BracketType.Close,
                 Operand = 4,
                 OperatorType = OperatorType.Subtraction
             };
-            _manager.AddOperation(firstLocalCalculation,operation);
 
-            _manager.SetResult(firstLocalCalculation);
+            _calculationManager.AddOperation(firstLocalCalculation, openOperation);
+            _calculationManager.AddOperation(firstLocalCalculation, closeOperation);
+            _calculationManager.SetResult(firstLocalCalculation);
 
             Assert.AreEqual(firstLocalCalculation.Result, -7);
         }
 
         /// <summary>
-        /// 5+6*(2-4)+2*11 = 15
+        /// 5+6*(2-4) = -7
+        /// -7
         /// </summary>
         [Test, Order(4)]
-        public void AddEndOperationsToLocalCalculationTest()
-        {
-            var firstLocalCalculation = _globalCalculation.LocalCalculations.First();
-            var operation = new Operation {
-                Operand = 2,
-                OperatorType = OperatorType.Addition
-            };
-            _manager.AddOperation(firstLocalCalculation, operation);
-            operation = new Operation {
-                Operand = 11,
-                OperatorType = OperatorType.Multiplication
-            };
-            _manager.AddOperation(firstLocalCalculation, operation);
-            _manager.SetResult(firstLocalCalculation);
-
-            Assert.AreEqual(firstLocalCalculation.Result, 15);
-        }
-
-        /// <summary>
-        /// 5+6*(2-4)+2*11 = 15
-        /// 15/2*4 = 30
-        /// </summary>
-        [Test, Order(5)]
-        public void C4_AddSecondLocalOperationWithOperations()
+        public void AddSecondLocalOperationWithOperations()
         {
             var secondLocalCalculation = new LocalCalculation();
-            _manager.AddNewLocalCalculation(_globalCalculation, secondLocalCalculation);
-            var operation = new Operation {
-                Operand = 2,
-                OperatorType = OperatorType.Division
-            };
-            _manager.AddOperation(secondLocalCalculation, operation);
-            operation = new Operation {
-                Operand = 4,
-                OperatorType = OperatorType.Multiplication
-            };
-            _manager.AddOperation(secondLocalCalculation, operation);
-            _manager.SetResult(secondLocalCalculation);
-            _manager.RefreshGlobalResult(_globalCalculation);
 
-            Assert.AreEqual(secondLocalCalculation.Order,2);
-            Assert.AreEqual(secondLocalCalculation.Result,30);
-            Assert.AreEqual(_globalCalculation.Result,30);
+            _calculationManager.AddNewLocalCalculation(_globalCalculation, secondLocalCalculation);
+
+            Assert.AreEqual(_globalCalculation.LocalCalculations.Count, 2);
+            Assert.AreEqual(secondLocalCalculation.StartOperand, -7);
         }
     }
 }

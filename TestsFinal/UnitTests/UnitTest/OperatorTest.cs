@@ -15,33 +15,38 @@ namespace UnitTest
         public void AdditionTest()
         {
             var result = Operators.Addition.Calculate(4, 5);
-            Assert.AreEqual(result,9);
-        }
+            var result2 = Operators.Addition.Calculate(5, (decimal)1.5);
 
-        [TestMethod]
-        public void SubstractionTest()
-        {
-            var result = Operators.Substraction.Calculate(6, 5);
-            Assert.AreEqual(result, 1);
-
-            result = Operators.Substraction.Calculate(5, 6);
-            Assert.AreEqual(result, -1);
+            Assert.AreEqual(result, 9);
+            Assert.AreEqual(result2, (decimal)6.5);
         }
 
         [TestMethod]
         public void MultiplicationTest()
         {
             var result = Operators.Multiplication.Calculate(4, 5);
+            var result2 = Operators.Multiplication.Calculate(5, (decimal)1.5);
+
             Assert.AreEqual(result, 20);
+            Assert.AreEqual(result2, (decimal)7.5);
+        }
+
+        [TestMethod]
+        public void SubtractionTest()
+        {
+            var result = Operators.Subtraction.Calculate(5, 4);
+
+            Assert.AreEqual(result, 1);
         }
 
         [TestMethod]
         public void DivisionTest()
         {
-            var result = Operators.Division.Calculate(5, 10);
-            Assert.AreEqual(result, (decimal)0.5);
-            
-            Assert.ThrowsException<DivideByZeroException>(() => Operators.Division.Calculate(5, 0));
+            var result = Operators.Division.Calculate(3, 2);
+
+            Assert.IsTrue(result == (decimal)1.5);
+            Assert.ThrowsException<DivideByZeroException>(
+                () => Operators.Division.Calculate(5, 0));
         }
     }
 }
