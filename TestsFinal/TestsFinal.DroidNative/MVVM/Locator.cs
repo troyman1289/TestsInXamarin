@@ -37,19 +37,5 @@ namespace TestsFinal.DroidNative.MVVM
             navigationService.Configure(typeof(T).ToString(), typeof(TK));
             SimpleIoc.Default.Register<T>();
         }
-
-        public CreateGlobalCalculationViewModel GlobalCalculationViewModel
-        {
-            get { return ServiceLocator.Current.GetInstance<CreateGlobalCalculationViewModel>(); }
-        }
-
-        public GlobalCalculationViewModel LocalCalculationViewModel
-        {
-            get { return ServiceLocator.Current.GetInstance<GlobalCalculationViewModel>(); }
-        }
-        public MainViewModel MainViewModel
-        {
-            get { return ServiceLocator.Current.GetInstance<MainViewModel>(); }
-        }
     }
 }
