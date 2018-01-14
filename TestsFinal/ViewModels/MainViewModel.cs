@@ -77,7 +77,6 @@ namespace ViewModels
             }
         }
 
-
         public void RefreshCalculations()
         {
             SetGlobalCalculations();
@@ -170,7 +169,6 @@ namespace ViewModels
 
         #region RemoveGlobalCalculationCommand
 
-        //TODO
         //private ICommand _removeGlobalCalculationCommand;
 
         //public ICommand RemoveGlobalCalculationCommand
@@ -186,17 +184,10 @@ namespace ViewModels
         //    }
         //}
 
-        private void HandleRemoveGlobalCalculation(GlobalCalculation globalCalculation)
-        {
-            _popUpService.ShowOkCancelPopUp("Remove", "Do you want to remove it?", result => {
-                if (result) {
-                    RemoveGlobalCalculation(globalCalculation);
-                }
-            });
-
-        }
-
- 
+        //private void HandleRemoveGlobalCalculation(GlobalCalculation globalCalculation)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         #endregion
     }

@@ -62,6 +62,29 @@ namespace Backend.Business
             }
         }
 
+        public void RemoveLocalCalculation(GlobalCalculation globalCalculation, LocalCalculation localCalculation)
+        {
+            _dataAccess.Remove(localCalculation.Operations);
+            _dataAccess.Remove(localCalculation);
+            globalCalculation.LocalCalculations.Remove(localCalculation);
+        }
+
+        public void RemoveLocalCalculationWithRefresh(GlobalCalculation globalCalculation, LocalCalculation localCalculation)
+        {
+            var orderToRemove = localCalculation.Order;
+            RemoveLocalCalculation(globalCalculation, localCalculation);
+            //calculate new from this position and refresh the order
+            var toRefresh = globalCalculation.LocalCalculations.Where(lc => lc.Order > orderToRemove).ToList();
+            foreach (var calculation in toRefresh) {
+                calculation.Order = orderToRemove;
+                var startOprand = globalCalculation.LocalCalculations.First(lc => lc.Order == orderToRemove - 1).Result;
+                calculation.StartOperand = startOprand;
+                SetResult(calculation);
+                SetOperationString(calculation);
+                orderToRemove++;
+            }
+            RefreshGlobalResult(globalCalculation);
+        }
 
         public void RefreshGlobalResult(GlobalCalculation globalCalculation)
         {
@@ -71,7 +94,14 @@ namespace Backend.Business
             _dataAccess.Update(globalCalculation);
         }
 
-
+        public void RemoveGlobalCalculation(GlobalCalculation globalCalculation)
+        {
+            var toRemove = globalCalculation.LocalCalculations.ToList();
+            foreach (var localCalculation in toRemove) {
+                RemoveLocalCalculation(globalCalculation, localCalculation);
+            }
+            _dataAccess.Remove(globalCalculation);
+        }
 
         public void AddNewGlobalCalculation(GlobalCalculation globalCalculation, decimal startOperand)
         {
