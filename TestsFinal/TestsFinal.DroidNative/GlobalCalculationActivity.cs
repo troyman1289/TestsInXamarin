@@ -109,7 +109,7 @@ namespace TestsFinal.DroidNative
             switch (item.ItemId) {
                 case Resource.Id.DeleteItem:
                     var localCalculation = _globalCalculation.LocalCalculations[menuInfo.Position];
-                    //_calculationManager.RemoveLocalCalculation(_globalCalculation,localCalculation,true);
+                    _calculationManager.RemoveLocalCalculationWithRefresh(_globalCalculation, localCalculation);
                     RefreshAll();
                     return true;
             }
@@ -177,7 +177,7 @@ namespace TestsFinal.DroidNative
                                 || (lastOperationWithCloseBracket != null
                                     && lastOperationWithOpenBracket.Order < lastOperationWithCloseBracket.Order);
             _closeBracketButton.Enabled = lastOperationWithOpenBracket != null
-                                 && (lastOperationWithCloseBracket == null || lastOperationWithCloseBracket.Order > lastOperationWithOpenBracket.Order);
+                                 && (lastOperationWithCloseBracket == null || lastOperationWithCloseBracket.Order < lastOperationWithOpenBracket.Order);
         }
 
         private void RefreshAll()
